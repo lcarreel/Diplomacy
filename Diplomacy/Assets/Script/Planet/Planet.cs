@@ -10,7 +10,7 @@ public abstract class Planet : MonoBehaviour {
     //TO DO : Add flux list : to where the flux go. Limit = 4. 
 
     //Method part
-
+    
     public void addShipAnchor()
     {
         addShipAnchor(1);

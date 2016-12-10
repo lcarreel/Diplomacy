@@ -6,11 +6,7 @@ public class Ship : MonoBehaviour {
     public float speed = 1;
 
     private GameObject target;
-
-    [SerializeField]
-    private GameObject cursorTargetPrefab;
-    private cursorTarget cursorTarget;
-
+    
     //Component
     private Rigidbody2D _rigidbody2D;
 
@@ -19,39 +15,31 @@ public class Ship : MonoBehaviour {
         _rigidbody2D = GetComponent<Rigidbody2D>();
     }
 
-
+    #region mouseDrag&DropHandler
     private void OnMouseDown()
     {
         print("Down");
         _rigidbody2D.isKinematic = true;
-        if (cursorTarget == null)
-            cursorTarget = Instantiate(cursorTargetPrefab).GetComponent<cursorTarget>();
-        cursorTarget.ActivateCollider();
+        GameMaster.Instance.cursorCreator.Create();
     }
     private void OnMouseDrag()
     {
-        cursorTarget.transform.position = (Vector2) GameMaster.Instance.currentCamera.ScreenToWorldPoint(Input.mousePosition);
+        GameMaster.Instance.cursorCreator.UpdatePosition();
     }
     private void OnMouseUp()
     {
         print("Up");
-        target = cursorTarget.calculateTarget();
-        //TO DO : detect if planet under mouse
+        target = GameMaster.Instance.cursorCreator.ReturnTargetAndDisappear();
         if (target != null)
         {
             StartCoroutine(GoToTargetPoint(speed));
         }
-        else
-        {
-            cursorTarget.disappear();
-            cursorTarget = null;
-        }
         _rigidbody2D.isKinematic = false;
     }
+    #endregion
 
     IEnumerator GoToTargetPoint(float speed)
     {
-        print("Go To !");
         float distanceDone = 0;
         while(distanceDone < 1 && target!=null)
         {

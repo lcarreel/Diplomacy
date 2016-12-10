@@ -8,5 +8,8 @@ public class PauseMenu : MonoBehaviour {
     {
         GameMaster.Instance.InversePause();
     }
-
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
 }

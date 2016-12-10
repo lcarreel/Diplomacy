@@ -23,6 +23,8 @@ public class GameMaster : MonoBehaviour {
     public PauseMenu pauseMenu;
     private bool onPause = false;
 
+    public cursorCreator cursorCreator;
+
     //method 
 
     private void Update()
