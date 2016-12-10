@@ -11,26 +11,47 @@ public class cursorTarget : MonoBehaviour {
     [SerializeField]
     private List<Ship> shipUnderCursor = new List<Ship>();
 
+    private bool seekingTarget = true;
 
     public float fadeSpeed = 3;
 
     //Component :
     SpriteRenderer _spriteRenderer;
+    CircleCollider2D _circleCollider2D;
+    Rigidbody2D _rigidbody2D;
 
     private void Start()
     {
         _spriteRenderer = this.GetComponent<SpriteRenderer>();
-
+        _circleCollider2D = this.GetComponent<CircleCollider2D>();
+        _rigidbody2D = this.GetComponent<Rigidbody2D>();
         //Add : tp to position at first
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (seekingTarget)
+        {
+            CollisionEnterManagement(collision);
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (seekingTarget)
+        {
+            CollisionExitManagement(collision);
+        }
+    }
+
+    private void CollisionEnterManagement(Collision2D collision)
+    {
+        print("Something under");
         Planet planetOver = collision.gameObject.GetComponent<Planet>();
         if (planetOver != null)
         {
             print("Planet Under");
-            if(!planetUnderCursor.Contains(planetOver))
+            if (!planetUnderCursor.Contains(planetOver))
                 planetUnderCursor.Add(planetOver);
         }
 
@@ -39,7 +60,7 @@ public class cursorTarget : MonoBehaviour {
         {
             print("Flux Under");
             if (!fluxUnderCursor.Contains(fluxOver))
-                 fluxUnderCursor.Add(fluxOver);
+                fluxUnderCursor.Add(fluxOver);
         }
 
         Ship shipOver = collision.gameObject.GetComponent<Ship>();
@@ -47,12 +68,11 @@ public class cursorTarget : MonoBehaviour {
         {
             print("Ship Under");
             if (!shipUnderCursor.Contains(shipOver))
-                 shipUnderCursor.Add(shipOver);
+                shipUnderCursor.Add(shipOver);
         }
-
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
+    private void CollisionExitManagement(Collision2D collision)
     {
         Planet planetOver = collision.gameObject.GetComponent<Planet>();
         if (planetOver != null)
@@ -74,13 +94,14 @@ public class cursorTarget : MonoBehaviour {
             if (shipUnderCursor.Contains(shipOver))
                 shipUnderCursor.Remove(shipOver);
         }
-
     }
 
 
     public GameObject calculateTarget()
     {
         GameObject res = null;
+        seekingTarget = false;
+        DeactivateCollider();
         //ship
         if (shipUnderCursor.Count != 0)
             res = shipUnderCursor[0].gameObject;
@@ -92,6 +113,20 @@ public class cursorTarget : MonoBehaviour {
             res = fluxUnderCursor[0].gameObject;
         return res;
     }
+
+    public void ActivateCollider()
+    {
+        if(_circleCollider2D == null)
+            _circleCollider2D = this.GetComponent<CircleCollider2D>();
+        _circleCollider2D.enabled = true;
+        
+    }
+    public void DeactivateCollider()
+    {
+        _circleCollider2D.enabled = false;
+        _rigidbody2D.constraints = RigidbodyConstraints2D.FreezePosition;
+    }
+
 
     public void disappear()
     {

@@ -11,11 +11,22 @@ public class Ship : MonoBehaviour {
     private GameObject cursorTargetPrefab;
     private cursorTarget cursorTarget;
 
+    //Component
+    private Rigidbody2D _rigidbody2D;
+
+    private void Start()
+    {
+        _rigidbody2D = GetComponent<Rigidbody2D>();
+    }
+
+
     private void OnMouseDown()
     {
         print("Down");
-        if(cursorTarget == null)
+        _rigidbody2D.isKinematic = true;
+        if (cursorTarget == null)
             cursorTarget = Instantiate(cursorTargetPrefab).GetComponent<cursorTarget>();
+        cursorTarget.ActivateCollider();
     }
     private void OnMouseDrag()
     {
@@ -35,6 +46,7 @@ public class Ship : MonoBehaviour {
             cursorTarget.disappear();
             cursorTarget = null;
         }
+        _rigidbody2D.isKinematic = false;
     }
 
     IEnumerator GoToTargetPoint(float speed)
