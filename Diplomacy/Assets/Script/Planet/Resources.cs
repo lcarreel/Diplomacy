@@ -7,6 +7,32 @@ public class Resources : Planet {
     private List<Flux> _flux = new List<Flux>();
     public List<UtilType.Supply> slot = new List<UtilType.Supply>();
 
+    #region visual
+    [SerializeField]
+    private List<SpriteRenderer> slotVisual = new List<SpriteRenderer>();
+
+
+    private void Start()
+    {
+        slot.Clear();
+        UtilType.Supply randomValue = UtilType.Supply.Food;
+        for (int i = 0; i < 3; i++)
+        {
+            int randomInt = Random.Range(0, 3);
+            if (randomInt < 1)
+                randomValue = UtilType.Supply.Powr;
+            else if (randomInt < 2)
+                randomValue = UtilType.Supply.Food;
+            else if (randomInt < 3)
+                randomValue = UtilType.Supply.Iron;
+            slot.Add(randomValue);
+            slotVisual[i].sprite = GameMaster.Instance.getResourcesVisual(i, randomValue);
+
+        }
+        print(slot.Count + " slot taken");
+    }
+    #endregion
+
     private void UpdateFluxValues()
     {
         int food = 0;

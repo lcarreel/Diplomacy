@@ -1,9 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+using System.Collections.Generic;
+
 public class GameMaster : MonoBehaviour {
 
     public static GameMaster Instance;
+
+    [SerializeField]
+    private List<Sprite> resourcesVisualPowr = new List<Sprite>();
+    [SerializeField]
+    public List<Sprite> resourcesVisualFood = new List<Sprite>();
+    [SerializeField]
+    public List<Sprite> resourcesVisualIron = new List<Sprite>();
 
     void Awake()
     {
@@ -57,6 +66,26 @@ public class GameMaster : MonoBehaviour {
             Time.timeScale = 0;
         }
         onPause = !onPause;
+    }
+
+
+    public Sprite getResourcesVisual(int numberOnCircle, UtilType.Supply type)
+    {
+        Sprite res = null;
+        switch (type)
+        {
+            case UtilType.Supply.Powr:
+                res = resourcesVisualPowr[numberOnCircle];
+                break;
+            case UtilType.Supply.Food:
+                res = resourcesVisualFood[numberOnCircle];
+                break;
+            case UtilType.Supply.Iron:
+                res = resourcesVisualIron[numberOnCircle];
+                break;
+        }
+        return res;
+
     }
 
 

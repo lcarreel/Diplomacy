@@ -40,6 +40,14 @@ public class Ship : MonoBehaviour {
 
     IEnumerator GoToTargetPoint(float speed)
     {
+        transform.SetParent(null);
+        
+        //look at target
+        Quaternion rotation = Quaternion.LookRotation
+             (target.transform.position - transform.position, transform.TransformDirection(Vector3.up));
+        transform.rotation = new Quaternion(0, 0, rotation.z, rotation.w);
+        //
+
         float distanceDone = 0;
         while(distanceDone < 1 && target!=null)
         {
