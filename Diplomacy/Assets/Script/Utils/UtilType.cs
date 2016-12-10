@@ -9,4 +9,29 @@ public static class UtilType {
         Food,
         Iron
     }
+
+    public enum PlanetID
+    {
+        Forky,
+        Caillou,
+        Winston,
+        LudumDare,
+        Aesthetic42,
+        Trantor,
+        Arrakus,
+        Goio,
+        Eos,
+        Spiral,
+        Correlian,
+        Aldebran,
+        Gallifrais,
+        Guernoufloux,
+        Perte,
+        Norynthe,
+        Perdu,
+        Karimor,
+        Kalimanchot,
+        Gerbesaltes,
+        Garufle
+    }
 }
