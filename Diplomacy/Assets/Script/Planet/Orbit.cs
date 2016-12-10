@@ -8,6 +8,6 @@ public class Orbit : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        this.transform.Rotate(rotation);
+        this.transform.Rotate(rotation*Time.deltaTime);
     }
 }

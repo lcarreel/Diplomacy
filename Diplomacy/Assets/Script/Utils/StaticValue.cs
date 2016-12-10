@@ -7,4 +7,5 @@ public static class StaticValue {
 
     public static int numberOfCivilDeadByShip = 12;
 
+    public static string maxScore = "MAXSCORE";
 }
