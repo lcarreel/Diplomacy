@@ -77,6 +77,7 @@
   <ItemGroup>
     <Compile Include="Assets\Script\Flux.cs" />
     <Compile Include="Assets\Script\GameMaster.cs" />
+    <Compile Include="Assets\Script\GameMecanic\CameraControl.cs" />
     <Compile Include="Assets\Script\GameMecanic\cursorCreator.cs" />
     <Compile Include="Assets\Script\GameMecanic\cursorTarget.cs" />
     <Compile Include="Assets\Script\PauseMenu.cs" />
