@@ -14,7 +14,6 @@ public class cursorTarget : MonoBehaviour {
 
     public float fadeSpeed = 3;
 
-
     //Component :
     SpriteRenderer _spriteRenderer;
 
@@ -30,6 +29,7 @@ public class cursorTarget : MonoBehaviour {
         Planet planetOver = collision.gameObject.GetComponent<Planet>();
         if (planetOver != null)
         {
+            print("Planet Under");
             if(!planetUnderCursor.Contains(planetOver))
                 planetUnderCursor.Add(planetOver);
         }
@@ -37,6 +37,7 @@ public class cursorTarget : MonoBehaviour {
         Flux fluxOver = collision.gameObject.GetComponent<Flux>();
         if (fluxOver != null)
         {
+            print("Flux Under");
             if (!fluxUnderCursor.Contains(fluxOver))
                  fluxUnderCursor.Add(fluxOver);
         }
@@ -44,6 +45,7 @@ public class cursorTarget : MonoBehaviour {
         Ship shipOver = collision.gameObject.GetComponent<Ship>();
         if (shipOver != null)
         {
+            print("Ship Under");
             if (!shipUnderCursor.Contains(shipOver))
                  shipUnderCursor.Add(shipOver);
         }
@@ -83,10 +85,10 @@ public class cursorTarget : MonoBehaviour {
         if (shipUnderCursor.Count != 0)
             res = shipUnderCursor[0].gameObject;
         //planet
-        if (planetUnderCursor.Count != 0)
+         else if (planetUnderCursor.Count != 0)
             res = planetUnderCursor[0].gameObject;
         //flux
-        if (fluxUnderCursor.Count != 0)
+        else if (fluxUnderCursor.Count != 0)
             res = fluxUnderCursor[0].gameObject;
         return res;
     }
@@ -101,11 +103,16 @@ public class cursorTarget : MonoBehaviour {
         while(_spriteRenderer.color.a > 0)
         {
             _spriteRenderer.color -= Color.black * fadeSpeed * Time.deltaTime;
-            print("Hey ! "+ _spriteRenderer.color.a);
             yield return new WaitForSeconds(0.1f);
         }
-        print("Hey ! " + _spriteRenderer.color.a);
-        Destroy(this.gameObject);
+        DestroyThis();
     }
 
+
+
+    public void DestroyThis()
+    {
+
+        Destroy(this.gameObject);
+    }
 }

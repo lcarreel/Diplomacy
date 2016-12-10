@@ -27,13 +27,19 @@ public class Ship : MonoBehaviour {
         target = cursorTarget.calculateTarget();
         //TO DO : detect if planet under mouse
         if (target != null)
+        {
             StartCoroutine(GoToTargetPoint(speed));
+        }
         else
+        {
             cursorTarget.disappear();
+            cursorTarget = null;
+        }
     }
 
     IEnumerator GoToTargetPoint(float speed)
     {
+        print("Go To !");
         float distanceDone = 0;
         while(distanceDone < 1)
         {

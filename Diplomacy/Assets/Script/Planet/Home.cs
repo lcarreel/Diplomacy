@@ -16,7 +16,7 @@ public class Home : Planet {
     public void Start()
     {
         SetCivil( (int)Random.Range(50,230) );
-        InvokeRepeating( "AddCivilPeriodically",0.5f,0.5f );
+        InvokeRepeating( "AddCivilPeriodically", StaticValue.tempo, StaticValue.tempo);
     }
 
     public int GetCivil()
