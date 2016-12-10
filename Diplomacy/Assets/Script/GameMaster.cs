@@ -20,8 +20,8 @@ public class GameMaster : MonoBehaviour {
 
     public Camera currentCamera;
 
-
-
+    public PauseMenu pauseMenu;
+    private bool onPause = false;
 
     //method 
 
@@ -29,8 +29,29 @@ public class GameMaster : MonoBehaviour {
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            InversePause();
+        }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
             Debug.Break();
         }
+    }
+
+    public void InversePause()
+    {
+
+        if (onPause)
+        {
+            pauseMenu.gameObject.SetActive(false);
+            Time.timeScale = 1;
+        }
+        else
+        {
+            pauseMenu.gameObject.SetActive(true);
+            Time.timeScale = 0;
+        }
+        onPause = !onPause;
+
     }
 
 }

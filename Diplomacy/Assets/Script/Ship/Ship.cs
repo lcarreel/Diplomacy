@@ -53,7 +53,7 @@ public class Ship : MonoBehaviour {
     {
         print("Go To !");
         float distanceDone = 0;
-        while(distanceDone < 1)
+        while(distanceDone < 1 && target!=null)
         {
             this.transform.position = Vector2.Lerp(this.transform.position, target.transform.position, distanceDone);
             distanceDone += speed * Time.deltaTime;
