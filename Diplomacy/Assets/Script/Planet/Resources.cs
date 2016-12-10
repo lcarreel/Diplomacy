@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Resources : MonoBehaviour {
+public class Resources : Planet {
 
     private List<Flux> _flux = new List<Flux>();
     public List<UtilType.Supply> slot = new List<UtilType.Supply>();
@@ -34,10 +34,18 @@ public class Resources : MonoBehaviour {
         return _flux;
     }
 
-    public void SetFlux(Flux flux)
+    public void SetFlux(Home planet, Flux flux)
     {
+        //ParticleSystem paticle_system;
+
+        flux.SetHomePlanet(planet);
         _flux.Add(flux);
         UpdateFluxValues();
+        //paticle_system = gameObject.AddComponent<ParticleSystem>();
+        
+
+        print(flux.GetResources());
+        print(flux.GetHomePlanet().ToString());
     }
 
     public void removeFlux(Flux flux)
