@@ -36,7 +36,7 @@ public class Resources : Planet {
 
     public void SetFlux(Home planet, Flux flux)
     {
-        ParticleSystem paticle_system;
+        //ParticleSystem paticle_system;
 
         flux.SetHomePlanet(planet);
         _flux.Add(flux);
