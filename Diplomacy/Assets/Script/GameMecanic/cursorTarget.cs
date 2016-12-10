@@ -68,7 +68,10 @@ public class cursorTarget : MonoBehaviour {
         {
             print("Ship Under");
             if (!shipUnderCursor.Contains(shipOver))
+            {
                 shipUnderCursor.Add(shipOver);
+                shipOver.ChangeKinematicState(true);
+            }
         }
     }
 
@@ -92,7 +95,10 @@ public class cursorTarget : MonoBehaviour {
         if (shipOver != null)
         {
             if (shipUnderCursor.Contains(shipOver))
+            {
                 shipUnderCursor.Remove(shipOver);
+                shipOver.ChangeKinematicState(false);
+            }
         }
     }
 
@@ -104,7 +110,11 @@ public class cursorTarget : MonoBehaviour {
         DeactivateCollider();
         //ship
         if (shipUnderCursor.Count != 0)
+        {
             res = shipUnderCursor[0].gameObject;
+            foreach (Ship ship in shipUnderCursor)
+                ship.ChangeKinematicState(false);
+        }
         //planet
          else if (planetUnderCursor.Count != 0)
             res = planetUnderCursor[0].gameObject;

@@ -3,7 +3,8 @@ using System.Collections;
 
 public abstract class Planet : MonoBehaviour {
 
-	public bool inOGU { get; private set; }
+    [SerializeField]
+    public bool inOGU;/*{ get; private set; }*/
 
     private int _shipAnchorToThisPlanet = 0;
 
