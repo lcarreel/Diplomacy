@@ -67,8 +67,7 @@ public class Resources : Planet {
         flux.SetHomePlanet(planet);
         _flux.Add(flux);
         UpdateFluxValues();
-        //paticle_system = gameObject.AddComponent<ParticleSystem>();
-        
+        flux.CreateFlux(GetComponent<Resources>(), planet);
 
         print(flux.GetResources());
         print(flux.GetHomePlanet().ToString());

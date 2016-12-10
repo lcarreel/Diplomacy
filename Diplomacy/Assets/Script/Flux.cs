@@ -6,9 +6,28 @@ public class Flux : MonoBehaviour {
     private Home home_planet;
     private Vector3 resources;
 
+    private GameObject fluxParticle;
+
     public void SetResourses(int food, int iron, int powr)
     {
         resources.Set(food, iron, powr);
+    }
+
+    public void CreateFlux(Resources origin, Home dest)
+    {
+        double angle;
+        double x, y;
+        x = dest.transform.position.x - origin.transform.position.x;
+        y = dest.transform.position.y - origin.transform.position.y;
+        fluxParticle = Instantiate(GameMaster.Instance.fluxParticles);
+        fluxParticle.transform.SetParent(origin.transform);
+        fluxParticle.transform.localPosition = Vector3.zero;
+        angle = System.Math.Atan(x / y);
+//        angle = (dest.transform.position.y > origin.transform.position.y ? -angle : angle);
+        angle = UnityEngine.Mathf.Rad2Deg * -angle;
+        angle = (dest.transform.position.y > origin.transform.position.y ? angle : angle + 180);
+
+        fluxParticle.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, (float)angle);
     }
 
     public Vector3 GetResources()
@@ -25,13 +44,4 @@ public class Flux : MonoBehaviour {
     {
         return home_planet;
     }
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }
