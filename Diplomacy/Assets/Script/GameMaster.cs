@@ -26,6 +26,7 @@ public class GameMaster : MonoBehaviour {
     public cursorCreator cursorCreator;
 
     public GameObject ship;
+    public GameObject fluxParticles;
 
     //method 
 

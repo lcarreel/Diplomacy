@@ -14,7 +14,8 @@ public class Home : Planet {
     private SpriteRenderer haloOut;
     [SerializeField]
     private SpriteRenderer haloOGU;
-
+    [SerializeField]
+    private GameObject orbit;
 
     //temporary
     public bool peopleHaveEnoughToLive = true;
@@ -24,7 +25,7 @@ public class Home : Planet {
     {
         SetCivil( (int)Random.Range(50,230) );
         InvokeRepeating( "AddCivilPeriodically", StaticValue.tempo, StaticValue.tempo);
-        InvokeRepeating( "CreateShip", StaticValue.tempo* shipCreationRange, StaticValue.tempo * shipCreationRange);
+        InvokeRepeating( "CreateShip", Random.Range(0, StaticValue.tempo * shipCreationRange), StaticValue.tempo * shipCreationRange);
     }
 
     public int GetCivil()
@@ -56,6 +57,7 @@ public class Home : Planet {
     {
         Ship shipCreate = Instantiate( GameMaster.Instance.ship).GetComponent<Ship>();
         shipCreate.transform.position = this.transform.position + ((Vector3)Vector2.right);
+        shipCreate.transform.SetParent(orbit.transform);
     }
 
 }
