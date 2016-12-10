@@ -1,10 +1,16 @@
 fileFormatVersion: 2
 guid: 86373e7a2a73d114ba1a9434ee65311e
-timeCreated: 1481334625
+timeCreated: 1481398417
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - currentCamera: {instanceID: 0}
+  - pauseMenu: {instanceID: 0}
+  - cursorCreator: {instanceID: 0}
+  - ship: {instanceID: 0}
+  - fluxParticles: {fileID: 1000014261573908, guid: 4f9abd812d285444cabded6ede35703d,
+      type: 2}
   executionOrder: -20
   icon: {instanceID: 0}
   userData: 
