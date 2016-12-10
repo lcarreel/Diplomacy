@@ -25,6 +25,8 @@ public class GameMaster : MonoBehaviour {
 
     public cursorCreator cursorCreator;
 
+    public GameObject ship;
+
     //method 
 
     private void Update()
