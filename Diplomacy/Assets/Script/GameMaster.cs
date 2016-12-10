@@ -20,4 +20,17 @@ public class GameMaster : MonoBehaviour {
 
     public Camera currentCamera;
 
+
+
+
+    //method 
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Debug.Break();
+        }
+    }
+
 }

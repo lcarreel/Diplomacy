@@ -6,29 +6,30 @@ public class Ship : MonoBehaviour {
     public float speed = 1;
 
     private GameObject target;
-    private Vector2 targetPosition;
 
     [SerializeField]
     private GameObject cursorTargetPrefab;
-    private GameObject cursorTarget;
+    private cursorTarget cursorTarget;
 
     private void OnMouseDown()
     {
         print("Down");
-        /*if(cursorTarget == null)
-            cursorTarget = Instantiate(cursorTargetPrefab);*/
+        if(cursorTarget == null)
+            cursorTarget = Instantiate(cursorTargetPrefab).GetComponent<cursorTarget>();
     }
     private void OnMouseDrag()
     {
-      //  cursorTarget.transform.position = Input.mousePosition;
+        cursorTarget.transform.position = (Vector2) GameMaster.Instance.currentCamera.ScreenToWorldPoint(Input.mousePosition);
     }
     private void OnMouseUp()
     {
         print("Up");
-        targetPosition = GameMaster.Instance.currentCamera.ScreenToWorldPoint( Input.mousePosition);
-        print(targetPosition + "  ScrenToWorld");
+        target = cursorTarget.calculateTarget();
         //TO DO : detect if planet under mouse
-        StartCoroutine(GoToTargetPoint(speed));
+        if (target != null)
+            StartCoroutine(GoToTargetPoint(speed));
+        else
+            cursorTarget.disappear();
     }
 
     IEnumerator GoToTargetPoint(float speed)
@@ -36,7 +37,7 @@ public class Ship : MonoBehaviour {
         float distanceDone = 0;
         while(distanceDone < 1)
         {
-            this.transform.position = Vector2.Lerp(this.transform.position, targetPosition, distanceDone);
+            this.transform.position = Vector2.Lerp(this.transform.position, target.transform.position, distanceDone);
             distanceDone += speed * Time.deltaTime;
             print("speed * Time.deltaTime = "+ speed * Time.deltaTime +"   with : "+ distanceDone);
             yield return new WaitForSeconds(0.1f);
