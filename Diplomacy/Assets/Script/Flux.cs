@@ -17,6 +17,8 @@ public class Flux : MonoBehaviour {
     {
         double angle;
         double x, y;
+        double distance;
+
         x = dest.transform.position.x - origin.transform.position.x;
         y = dest.transform.position.y - origin.transform.position.y;
         fluxParticle = Instantiate(GameMaster.Instance.fluxParticles);
@@ -25,9 +27,12 @@ public class Flux : MonoBehaviour {
         angle = System.Math.Atan(x / y);
 //        angle = (dest.transform.position.y > origin.transform.position.y ? -angle : angle);
         angle = UnityEngine.Mathf.Rad2Deg * -angle;
-        angle = (dest.transform.position.y > origin.transform.position.y ? angle : angle + 180);
+        angle = (dest.transform.position.y >= origin.transform.position.y ? angle : angle + 180);
 
         fluxParticle.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, (float)angle);
+        print(fluxParticle);
+        distance = System.Math.Sqrt(x * x + y * y);
+        fluxParticle.GetComponent<ParticleSystem>().startLifetime = (float)distance / 2.5f;
     }
 
     public Vector3 GetResources()
