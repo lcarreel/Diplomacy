@@ -75,7 +75,7 @@ public class GameMaster : MonoBehaviour {
         onPause = !onPause;
     }
 
-
+    #region GetVisual
     public Sprite getResourcesVisual(int numberOnCircle, UtilType.Supply type)
     {
         Sprite res = null;
@@ -95,7 +95,26 @@ public class GameMaster : MonoBehaviour {
 
     }
 
+    public Sprite getResourcesIcon(UtilType.Supply type)
+    {
+        Sprite spriteRes = supplyIcon[0];
+        switch (type)
+        {
+            case UtilType.Supply.Food:
+                spriteRes = supplyIcon[0];
+                break;
+            case UtilType.Supply.Iron:
+                spriteRes = supplyIcon[1];
+                break;
+            case UtilType.Supply.Powr:
+                spriteRes = supplyIcon[2];
+                break;
+        }
 
+        return spriteRes;
+    }
+
+    #endregion 
     public bool VerificationOfGameProgress()
     {
         bool gameFinish = true;

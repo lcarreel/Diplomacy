@@ -12,8 +12,16 @@ public class Resources : Planet {
     private List<SpriteRenderer> slotVisual = new List<SpriteRenderer>();
 
 
+    private ResourcesUI resourcesUI;
+
     private void Start()
     {
+        resourcesUI = Instantiate(GameMaster.Instance.resourcesUI).GetComponent<ResourcesUI>();
+        resourcesUI.transform.SetParent(GameMaster.Instance.canvasWorld.transform);
+        resourcesUI.transform.position = this.transform.position;
+        resourcesUI.transform.localScale = Vector3.one;
+
+
         slot.Clear();
         UtilType.Supply randomValue = UtilType.Supply.Food;
         for (int i = 0; i < 3; i++)
@@ -29,6 +37,9 @@ public class Resources : Planet {
             slotVisual[i].sprite = GameMaster.Instance.getResourcesVisual(i, randomValue);
 
         }
+
+        resourcesUI.UpdateIcon(slot);
+
     }
     #endregion
 
