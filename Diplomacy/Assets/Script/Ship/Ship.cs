@@ -12,6 +12,19 @@ public class Ship : MonoBehaviour {
     private Rigidbody2D _rigidbody2D;
     private SpriteRenderer _spriteRenderer;
     private Animator _animator;
+    private Planet location;
+
+    private AudioSource _audioSource;
+    public AudioClip selectIdle;
+    public AudioClip selectMining;
+    public AudioClip sendToWar;
+    public AudioClip sendToMine;
+    public AudioClip destroyShip;
+
+    private void Awake()
+    {
+        _audioSource = GetComponent<AudioSource>();
+    }
 
     private void Start()
     {
@@ -19,6 +32,18 @@ public class Ship : MonoBehaviour {
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _animator = GetComponent<Animator>();
     }
+
+    public void SetLocation(Planet planet)
+    {
+        location = planet;
+    }
+
+
+    public Planet getLocation()
+    {
+        return location;
+    }
+
 
     //creation AND visual :
     public void GoToOGU()
@@ -55,6 +80,10 @@ public class Ship : MonoBehaviour {
             _rigidbody2D.isKinematic = true;
             _animator.SetBool("HighLight", true);
             GameMaster.Instance.cursorCreator.Create(this.gameObject);
+            if (location.GetComponent<Home>())
+                _audioSource.PlayOneShot(selectIdle);
+            else if (location.GetComponent<Resources>())
+                _audioSource.PlayOneShot(selectMining);
         }
     }
     private void OnMouseDrag()
@@ -72,10 +101,16 @@ public class Ship : MonoBehaviour {
             if (target != null)
             {
                 StartCoroutine(GoToTargetPoint(speed));
+
             }
             _rigidbody2D.isKinematic = false;
             _animator.SetBool("HighLight", false);
+            if (target.GetComponent<Resources>() && target.GetComponent<Resources>().GetFlux().Count == 0)
+                _audioSource.PlayOneShot(sendToMine);
+            else if (target.GetComponent<Planet>() && !target.GetComponent<Planet>().inOGU)
+                _audioSource.PlayOneShot(sendToWar);
         }
+
     }
     #endregion
 
@@ -223,10 +258,12 @@ public class Ship : MonoBehaviour {
 
     public void DestroyShip()
     {
+        _audioSource.PlayOneShot(destroyShip);
         if (origin.wholeBadArmada.Contains(this))
             origin.wholeBadArmada.Remove(this);
         GameMaster.Instance.AddCasualties(1);
         Destroy(this.gameObject);
     }
+
 
 }

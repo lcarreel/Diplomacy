@@ -8,6 +8,7 @@ public class Home : Planet {
 
     private int civil = 50;
     public int mood = 50;
+    private int state = 1;
 
     private float food = 0;
     private float foodNeeded;
@@ -23,6 +24,14 @@ public class Home : Planet {
 
 
     private HomeUI homeUI;
+
+    public AudioClip spawnAmoi;
+    public AudioClip unhappy;
+    public AudioClip newOGU;
+    public AudioClip killCivil;
+    public AudioClip destroyHome;
+    public AudioClip healHome;
+
 
     //temporary
     public bool peopleHaveEnoughToLive = true;
@@ -91,10 +100,12 @@ public class Home : Planet {
         if (mood < 40 && inOGU)
         {
             quitOGU();
+            _audioSource.PlayOneShot(unhappy);
         }
         if(mood > 60 && !inOGU)
         {
             joinOGU();
+            _audioSource.PlayOneShot(newOGU);
         }
 
         UpdateValueAndVisual();
@@ -141,6 +152,7 @@ public class Home : Planet {
             destroyAShipAnchor();
         } else if(GetCivil() > 0)
         {
+            _audioSource.PlayOneShot(killCivil);
             destroyCivil(1);
         } else
         {
@@ -195,6 +207,13 @@ public class Home : Planet {
                     GameMaster.Instance.AddCasualties(1);
             }
         }
+        if (GetCivil() == 0 && state == 1)
+        {
+            _audioSource.PlayOneShot(destroyHome);
+            state = 0;
+        }
+        if (GetCivil() > 0 && state == 0)
+            _audioSource.PlayOneShot(healHome);
     }
     public void CreateShip()
     {
@@ -206,8 +225,12 @@ public class Home : Planet {
             this.addShipAnchor(shipCreate);
             //define shipCamp
             shipCreate.origin = this;
+            shipCreate.SetLocation(this);
             if (inOGU)
+            {
                 shipCreate.GoToOGU();
+//                _audioSource.PlayOneShot(spawnAmoi);
+            }
             else
             {
                 shipCreate.GetOutOGU();
