@@ -3,6 +3,8 @@ using System.Collections;
 
 public abstract class Planet : MonoBehaviour {
 
+    public UtilType.PlanetID nameInGame;
+
     [SerializeField]
     public bool inOGU;/*{ get; private set; }*/
 

@@ -15,12 +15,14 @@ public class Resources : Planet {
     private ResourcesUI resourcesUI;
 
     private void Start()
-    {
+    {        
+        this.name = "PlaneteResources " + this.nameInGame;
+
         resourcesUI = Instantiate(GameMaster.Instance.resourcesUI).GetComponent<ResourcesUI>();
         resourcesUI.transform.SetParent(GameMaster.Instance.canvasWorld.transform);
         resourcesUI.transform.position = this.transform.position;
         resourcesUI.transform.localScale = Vector3.one;
-
+        resourcesUI.name = "ResourcesUI of " + nameInGame;
 
         slot.Clear();
         UtilType.Supply randomValue = UtilType.Supply.Food;

@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-
 using System.Collections.Generic;
 
 public class GameMaster : MonoBehaviour {
@@ -26,7 +25,26 @@ public class GameMaster : MonoBehaviour {
         {
             Destroy(gameObject);
         }
+
+        List<UtilType.PlanetID> nameUsed = new List<UtilType.PlanetID>();
+        foreach(Planet planet in FindObjectsOfType<Planet>())
+        {
+            TryRandomTillSuccess(planet, nameUsed);
+        }
+
     }
+    private void TryRandomTillSuccess(Planet planet, List<UtilType.PlanetID> nameUsed)
+    {
+        planet.nameInGame = (UtilType.PlanetID)Random.Range(0, StaticValue.numberOfPlanetName);
+        if (nameUsed.Contains(planet.nameInGame))
+        {
+            TryRandomTillSuccess(planet, nameUsed);
+        } else
+        {
+            nameUsed.Add(planet.nameInGame);
+        }
+    }
+
     public bool gameEnd = false;
     public int score = 0;
 

@@ -29,10 +29,13 @@ public class Home : Planet {
 
     public void Start()
     {
+        this.name = "PlaneteHome " + this.nameInGame;
+
         homeUI = Instantiate(GameMaster.Instance.homeUI).GetComponent<HomeUI>();
         homeUI.transform.SetParent(GameMaster.Instance.canvasWorld.transform);
         homeUI.transform.position = this.transform.position;
         homeUI.transform.localScale = Vector3.one;
+        homeUI.name = "HomeUI of " + nameInGame;
 
         SetCivil( (int)Random.Range(50,230) );
         InvokeRepeating( "AddCivilPeriodically", StaticValue.tempo, StaticValue.tempo);
@@ -51,7 +54,7 @@ public class Home : Planet {
 
     private void UpdateValueAndVisual()
     {
-        peopleHaveEnoughToLive = (food < foodNeeded || powr < powrNeeded || iron < ironNeeded);
+        peopleHaveEnoughToLive = !(food < foodNeeded || powr < powrNeeded || iron < ironNeeded);
 
         UpdateUI();
     }
@@ -82,8 +85,12 @@ public class Home : Planet {
 
     public void AddCivilPeriodically()
     {
+        iron -= civil / StaticValue.consomation;
+        food -= civil / StaticValue.consomation;
+        powr -= civil / StaticValue.consomation;
         if (peopleHaveEnoughToLive)
             SetCivil(GetCivil() + 1);
+        //supply consomation : 
     }
     public void CreateShip()
     {
