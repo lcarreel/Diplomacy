@@ -43,9 +43,9 @@ public class Home : Planet {
         InvokeRepeating( "AddCivilPeriodically", StaticValue.tempo, StaticValue.tempo);
         InvokeRepeating( "CreateShip", Random.Range(0, StaticValue.tempo * shipCreationRange), StaticValue.tempo * shipCreationRange);
 
-        foodNeeded = civil;
-        powrNeeded = civil;
-        ironNeeded = civil;
+        foodNeeded = civil+1;
+        powrNeeded = civil+1;
+        ironNeeded = civil+1;
 
         food = (int)Random.Range(100, 280);
         iron = (int)Random.Range(100, 280);
@@ -74,10 +74,12 @@ public class Home : Planet {
     public void SetCivil(int value)
     {
         civil = value;
+        if (civil < 0)
+            civil = 0;
         UpdateCivilText();
-        foodNeeded = civil;
-        powrNeeded = civil;
-        ironNeeded = civil;
+        foodNeeded = civil+1;
+        powrNeeded = civil+1;
+        ironNeeded = civil+1;
         UpdateValueAndVisual();
     }
 
@@ -140,7 +142,8 @@ public class Home : Planet {
     {
         int deadNumber = GetCivil() - numberOfShipAttacked * StaticValue.numberOfCivilDeadByShip;
         SetCivil(deadNumber);
-        GameMaster.Instance.AddCasualties(deadNumber);
+        if(GetCivil()!=0)
+            GameMaster.Instance.AddCasualties(deadNumber);
     }
 
     private void UpdateCivilText()
@@ -172,7 +175,8 @@ public class Home : Planet {
             if (iron < ironNeeded && food < foodNeeded && powr < powrNeeded)
             {
                 SetCivil(GetCivil() - 1);
-                GameMaster.Instance.AddCasualties(1);
+                if (GetCivil() != 0)
+                    GameMaster.Instance.AddCasualties(1);
             }
         }
     }

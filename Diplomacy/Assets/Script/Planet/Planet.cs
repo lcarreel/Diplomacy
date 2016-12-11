@@ -16,6 +16,8 @@ public abstract class Planet : MonoBehaviour {
     public Vector3 eulerAnglesRotationOfShipInOrbit = new Vector3(0,0,90);
 
     private GameObject target;
+
+    private Animator _animator;
     
     //Method part
 
@@ -63,6 +65,9 @@ public abstract class Planet : MonoBehaviour {
 
     private void OnMouseDown()
     {
+        if (_animator == null)
+            _animator = GetComponent<Animator>();
+        _animator.SetBool("HighLight", true);
         GameMaster.Instance.cursorCreator.Create();
     }
 
@@ -91,5 +96,8 @@ public abstract class Planet : MonoBehaviour {
             }
             print("target ok");
         }
+        if (_animator == null)
+            _animator = GetComponent<Animator>();
+        _animator.SetBool("HighLight", false);
     }
 }

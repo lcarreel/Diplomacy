@@ -11,11 +11,13 @@ public class Ship : MonoBehaviour {
     //Component
     private Rigidbody2D _rigidbody2D;
     private SpriteRenderer _spriteRenderer;
+    private Animator _animator;
 
     private void Start()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        _animator = GetComponent<Animator>();
     }
 
     //creation AND visual :
@@ -26,7 +28,7 @@ public class Ship : MonoBehaviour {
         {
             _spriteRenderer = GetComponent<SpriteRenderer>();
         }
-        _spriteRenderer.color = Color.blue;
+        _spriteRenderer.color = Color.blue+Color.green;
 
         if (target != null)
             target = null;
@@ -39,6 +41,7 @@ public class Ship : MonoBehaviour {
         if (inOGU)
         {
             _rigidbody2D.isKinematic = true;
+            _animator.SetBool("HighLight", true);
             GameMaster.Instance.cursorCreator.Create();
         }
     }
@@ -59,6 +62,7 @@ public class Ship : MonoBehaviour {
                 StartCoroutine(GoToTargetPoint(speed));
             }
             _rigidbody2D.isKinematic = false;
+            _animator.SetBool("HighLight", false);
         }
     }
     #endregion
