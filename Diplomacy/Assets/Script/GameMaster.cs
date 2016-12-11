@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -15,6 +16,8 @@ public class GameMaster : MonoBehaviour {
 
     public List<Sprite> supplyIcon = new List<Sprite>();
 
+    public int totalOfHome = 0;
+
     void Awake()
     {
         if (Instance == null)
@@ -26,10 +29,13 @@ public class GameMaster : MonoBehaviour {
             Destroy(gameObject);
         }
 
+        totalOfHome = 0;
         List<UtilType.PlanetID> nameUsed = new List<UtilType.PlanetID>();
         foreach(Planet planet in FindObjectsOfType<Planet>())
         {
             TryRandomTillSuccess(planet, nameUsed);
+            if(planet.GetComponent<Home>())
+                totalOfHome++;
         }
 
     }
@@ -47,6 +53,7 @@ public class GameMaster : MonoBehaviour {
 
     public bool gameEnd = false;
     public int score = 0;
+    private int planetInPeace = 0;
 
 
     public Camera currentCamera;
@@ -64,6 +71,10 @@ public class GameMaster : MonoBehaviour {
     public GameObject canvasWorld;
     public GameObject canvasCamera;
 
+    [SerializeField]
+    private Text scoreUI;
+    [SerializeField]
+    private Text progressUI;
     //method 
 
     private void Update()
@@ -132,17 +143,55 @@ public class GameMaster : MonoBehaviour {
         return spriteRes;
     }
 
-    #endregion 
+    #endregion
+
+    public void AddPlanetInPeace()
+    {
+        planetInPeace++;
+        UpdateProgressWindow(planetInPeace);
+    }
+    public void RemovePlanetInPeace()
+    {
+        planetInPeace--;
+        UpdateProgressWindow(planetInPeace);
+    }
+
+    public void AddCasualties(int dead)
+    {
+        score += dead;
+        UpdateScoreWindow();
+
+        //TO DO : idea quick to develop : civil/military and famine / war death
+    }
+
+    #region UI-ScoreAndProgress
+    private void UpdateScoreWindow()
+    {
+        scoreUI.text = "Casualties = "+score;
+    }
+
+    private void UpdateProgressWindow(int progress)
+    {
+        progressUI.text = progress + "/" + totalOfHome + " planet in peace";
+    }
+
+    #endregion
+
     public bool VerificationOfGameProgress()
     {
         bool gameFinish = true;
+        int planetInPeace = 0;
         foreach(Home homePlanet in FindObjectsOfType<Home>())
         {
             if (!homePlanet.inOGU)
             {
                 gameFinish = false;
+            } else
+            {
+                planetInPeace++;
             }
         }
+        UpdateProgressWindow(planetInPeace);
         gameEnd = gameFinish;
         if (gameEnd)
         {

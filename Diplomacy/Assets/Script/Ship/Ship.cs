@@ -6,35 +6,60 @@ public class Ship : MonoBehaviour {
     public float speed = 1;
 
     private GameObject target;
-    
+    public Home origin;
+    public bool inOGU = false;
     //Component
     private Rigidbody2D _rigidbody2D;
+    private SpriteRenderer _spriteRenderer;
 
     private void Start()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
+        _spriteRenderer = GetComponent<SpriteRenderer>();
     }
+
+    //creation AND visual :
+    public void GoToOGU()
+    {
+        inOGU = true;
+        if (_spriteRenderer==null)
+        {
+            _spriteRenderer = GetComponent<SpriteRenderer>();
+        }
+        _spriteRenderer.color = Color.blue;
+
+        if (target != null)
+            target = null;
+    }
+
 
     #region mouseDrag&DropHandler
     private void OnMouseDown()
     {
-        print("Down");
-        _rigidbody2D.isKinematic = true;
-        GameMaster.Instance.cursorCreator.Create();
+        if (inOGU)
+        {
+            _rigidbody2D.isKinematic = true;
+            GameMaster.Instance.cursorCreator.Create();
+        }
     }
     private void OnMouseDrag()
     {
-        GameMaster.Instance.cursorCreator.UpdatePosition();
+        if (inOGU)
+        {
+            GameMaster.Instance.cursorCreator.UpdatePosition();
+        }
     }
     private void OnMouseUp()
     {
-        print("Up");
-        target = GameMaster.Instance.cursorCreator.ReturnTargetAndDisappear();
-        if (target != null)
+        if (inOGU)
         {
-            StartCoroutine(GoToTargetPoint(speed));
+            target = GameMaster.Instance.cursorCreator.ReturnTargetAndDisappear();
+            if (target != null)
+            {
+                StartCoroutine(GoToTargetPoint(speed));
+            }
+            _rigidbody2D.isKinematic = false;
         }
-        _rigidbody2D.isKinematic = false;
     }
     #endregion
 
@@ -74,11 +99,11 @@ public class Ship : MonoBehaviour {
         }
     }
 
-
+    
 
     private void AttackPlanet(Planet planetAttacked)
     {
-        if (planetAttacked != null) {
+        if (!planetAttacked.inOGU) {
             if (planetAttacked.getNumberOfShipOnIt() != 0)
             {
                 AttackDefendedPlanet(planetAttacked);
@@ -86,13 +111,16 @@ public class Ship : MonoBehaviour {
             {
                 AttackUndefendedPlanet(planetAttacked);
             }
+        } else
+        {
+            planetAttacked.GoOrbit(this);
         }
     }
 
     private void AttackDefendedPlanet(Planet planetAttacked)
     {
-        planetAttacked.destroyShipAnchor(1);
-        Destroy(this.gameObject);
+        planetAttacked.destroyAShipAnchor();
+        DestroyShip();
     }
 
     private void AttackUndefendedPlanet(Planet planetAttacked)
@@ -100,22 +128,38 @@ public class Ship : MonoBehaviour {
         Home homeAttacked = planetAttacked.GetComponent<Home>();
         if (homeAttacked != null)
         {
-            AttackHome(homeAttacked);
+            if (homeAttacked.inOGU)
+                homeAttacked.GoOrbit(this);
+            else
+                AttackHome(homeAttacked);
         }
         else
         {
-            //TO DO : reaction on Resources planet : planet are now free AND if AI did it : a flux is born !
+            if (inOGU)
+            {
+                //IMPORTANT : planetAttacked != Home ! (because of the previous else)
+                planetAttacked.inOGU = true;
+            } else
+            {
+                planetAttacked.inOGU = false;
+                Resources resources = planetAttacked.GetComponent<Resources>();
+                if (resources)
+                    resources.SetFlux(origin, gameObject.AddComponent<Flux>());
+            }
+            planetAttacked.GoOrbit(this);
         }
     }
 
 
     private void AttackHome(Home homeAttacked)
     {
-        homeAttacked.destroyCivil(1);
-        Destroy(this.gameObject);
-    }
-    private void AttackResources(Resources resourcesAttacked)
-    {
+        if (homeAttacked.Attacked(this))
+        {
+            DestroyShip();
+        } else
+        {
+            homeAttacked.GoOrbit(this);
+        }
         
     }
 
@@ -125,6 +169,14 @@ public class Ship : MonoBehaviour {
         if (_rigidbody2D == null)
             _rigidbody2D = GetComponent<Rigidbody2D>();
         _rigidbody2D.isKinematic = value;
+    }
+
+    private void DestroyShip()
+    {
+        if (origin.wholeBadArmada.Contains(this))
+            origin.wholeBadArmada.Remove(this);
+        GameMaster.Instance.AddCasualties(1);
+        Destroy(this.gameObject);
     }
 
 }

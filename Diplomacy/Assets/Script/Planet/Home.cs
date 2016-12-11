@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Home : Planet {
 
     private int civil = 50;
-    private int mood = 50;
+    public int mood = 50;
 
     private float food = 0;
     private float foodNeeded;
@@ -18,8 +19,7 @@ public class Home : Planet {
     private SpriteRenderer haloOut;
     [SerializeField]
     private SpriteRenderer haloOGU;
-    [SerializeField]
-    private GameObject orbit;
+
 
     private HomeUI homeUI;
 
@@ -27,9 +27,11 @@ public class Home : Planet {
     public bool peopleHaveEnoughToLive = true;
     public int shipCreationRange = 3;
 
+    public List<Ship> wholeBadArmada = new List<Ship>();
+
     public void Start()
     {
-        this.name = "PlaneteHome " + this.nameInGame;
+        this.name = "PlanetHome " + this.nameInGame;
 
         homeUI = Instantiate(GameMaster.Instance.homeUI).GetComponent<HomeUI>();
         homeUI.transform.SetParent(GameMaster.Instance.canvasWorld.transform);
@@ -48,6 +50,12 @@ public class Home : Planet {
         food = (int)Random.Range(100, 280);
         iron = (int)Random.Range(100, 280);
         powr = (int)Random.Range(100, 280);
+
+        SetMood((int)Random.Range(25, 100));
+        if(mood > 60)
+        {
+            joinOGU();
+        }
 
         UpdateValueAndVisual();
     }
@@ -73,9 +81,66 @@ public class Home : Planet {
         UpdateValueAndVisual();
     }
 
+    public void SetMood(int value)
+    {
+        mood = Mathf.Min(value,100);
+        mood = Mathf.Max(value, 0);
+        if (mood < 40 && inOGU)
+        {
+            quitOGU();
+        }
+        if(mood > 60 && !inOGU)
+        {
+            joinOGU();
+        }
+
+        UpdateValueAndVisual();
+    }
+
+    private void quitOGU()
+    {
+        inOGU = false;
+        haloOGU.enabled = false;
+        haloOut.enabled = true;
+
+        //TO DO : Kill all ship near him or convert their ?
+
+
+        GameMaster.Instance.RemovePlanetInPeace();
+    }
+    private void joinOGU()
+    {
+        inOGU = true;
+        haloOGU.enabled = true;
+        haloOut.enabled = false;
+        foreach(Ship ship in wholeBadArmada)
+        {
+            ship.GoToOGU();
+        }
+        GameMaster.Instance.AddPlanetInPeace();
+    }
+
+
+    public bool Attacked(Ship ship)
+    {
+        bool destroyInAttack = true;
+        if(this.getNumberOfShipOnIt() != 0)
+        {
+            destroyAShipAnchor();
+        } else if(GetCivil() > 0)
+        {
+            destroyCivil(1);
+        } else
+        {
+            destroyInAttack = false;
+        }
+        return destroyInAttack;
+    }
     public void destroyCivil(int numberOfShipAttacked)
     {
-        SetCivil(GetCivil() - numberOfShipAttacked * StaticValue.numberOfCivilDeadByShip );
+        int deadNumber = GetCivil() - numberOfShipAttacked * StaticValue.numberOfCivilDeadByShip;
+        SetCivil(deadNumber);
+        GameMaster.Instance.AddCasualties(deadNumber);
     }
 
     private void UpdateCivilText()
@@ -86,18 +151,45 @@ public class Home : Planet {
     public void AddCivilPeriodically()
     {
         iron -= civil / StaticValue.consomation;
+        if (iron < 0)
+            iron = 0;
         food -= civil / StaticValue.consomation;
+        if (food < 0)
+            food = 0;
         powr -= civil / StaticValue.consomation;
+        if (powr < 0)
+            powr = 0;
         if (peopleHaveEnoughToLive)
+        {
             SetCivil(GetCivil() + 1);
-        //supply consomation : 
+            SetMood(mood + 1);
+            if(iron >= ironNeeded*2 || food >= foodNeeded*2 || powr >= powrNeeded*2)
+                SetMood(mood + 2);
+        }
+        else
+        {
+            SetMood(mood-1);
+            if (iron < ironNeeded && food < foodNeeded && powr < powrNeeded)
+            {
+                SetCivil(GetCivil() - 1);
+                GameMaster.Instance.AddCasualties(1);
+            }
+        }
     }
     public void CreateShip()
     {
         Ship shipCreate = Instantiate( GameMaster.Instance.ship).GetComponent<Ship>();
         shipCreate.transform.position = this.transform.position + ((Vector3)Vector2.right);
         shipCreate.transform.SetParent(orbit.transform);
+        this.addShipAnchor(shipCreate);
         //define shipCamp
+        shipCreate.origin = this;
+        if(inOGU)
+            shipCreate.GoToOGU();
+        else
+        {
+            wholeBadArmada.Add(shipCreate);
+        }
     }
 
 
@@ -110,8 +202,7 @@ public class Home : Planet {
 
     public void AddRessources(Vector3 supply)
     {
-        //food / flux_nbr , iron / flux_nbr , powr / flux_nbr
-
+       // print("Add supply : " + supply);
         food += supply.x;
         iron += supply.y;
         powr += supply.z;

@@ -16,7 +16,7 @@ public class Resources : Planet {
 
     private void Start()
     {        
-        this.name = "PlaneteResources " + this.nameInGame;
+        this.name = "PlanetResources " + this.nameInGame;
 
         resourcesUI = Instantiate(GameMaster.Instance.resourcesUI).GetComponent<ResourcesUI>();
         resourcesUI.transform.SetParent(GameMaster.Instance.canvasWorld.transform);
@@ -88,8 +88,8 @@ public class Resources : Planet {
             UpdateFluxValues();
             flux.CreateFlux(GetComponent<Resources>(), planet);
 
-            print(flux.GetResources());
-            print(flux.GetHomePlanet().ToString());
+            //print(flux.GetResources());
+            //print(flux.GetHomePlanet().ToString());
         }
     }
 

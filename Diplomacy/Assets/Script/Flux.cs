@@ -7,6 +7,8 @@ public class Flux : MonoBehaviour {
     private Vector3 resources;
 
     private GameObject fluxParticle;
+    [SerializeField]
+    private float fluxSpeed = 48f;
 
     public void SetResourses(int food, int iron, int powr)
     {
@@ -35,7 +37,7 @@ public class Flux : MonoBehaviour {
         fluxParticle.GetComponent<ParticleSystem>().startLifetime = (float)distance / 2.5f;
 
 
-        InvokeRepeating("GiveResourcesToHomePlanet", StaticValue.tempo * Time.deltaTime, StaticValue.tempo * Time.deltaTime);
+        InvokeRepeating("GiveResourcesToHomePlanet", 0.1f, StaticValue.tempo * Time.deltaTime* fluxSpeed);
     }
 
     public Vector3 GetResources()

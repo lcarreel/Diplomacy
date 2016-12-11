@@ -62,14 +62,17 @@ public class HomeUI : MonoBehaviour {
         }
         
         moodSlider.maxValue = 100;
-        moodSlider.value = mood / 100;
-        if (mood < 50 )
+        moodSlider.value = (float)mood;
+        if (mood < 40 )
         {
             backgroundMoodSlider.color = Color.red;
         }
-        else
+        else if(mood > 60)
         {
             backgroundMoodSlider.color = Color.white;
+        } else
+        {
+            backgroundMoodSlider.color = Color.yellow+Color.red;
         }
     }
 

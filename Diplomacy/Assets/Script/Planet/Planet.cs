@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public abstract class Planet : MonoBehaviour {
 
@@ -8,40 +9,60 @@ public abstract class Planet : MonoBehaviour {
     [SerializeField]
     public bool inOGU;/*{ get; private set; }*/
 
-    private int _shipAnchorToThisPlanet = 0;
+    public List<Ship> _shipAnchorToThisPlanet = new List<Ship>();
+
+    [SerializeField]
+    protected GameObject orbit;
+    public Vector3 eulerAnglesRotationOfShipInOrbit = new Vector3(0,0,90);
 
     private GameObject target;
-
-    //TO DO : Add flux list : to where the flux go. Limit = 4. 
-
+    
     //Method part
 
-    public void addShipAnchor()
+    public void addShipAnchor(Ship ship)
     {
-        addShipAnchor(1);
+        _shipAnchorToThisPlanet.Add(ship);
     }
-    public void addShipAnchor(int numberOfShipToAdd)
+    public void addShipAnchor(List<Ship> ShipsToAdd)
     {
-        _shipAnchorToThisPlanet += numberOfShipToAdd;
+        foreach (Ship ship in ShipsToAdd)
+            addShipAnchor(ship);
     }
     
-    public void destroyShipAnchor()
+    public void destroyAShipAnchor()
     {
-        destroyShipAnchor(1);
+        if (_shipAnchorToThisPlanet.Count != 0)
+        {
+            Ship shipWhoSacrificeFOrOther = _shipAnchorToThisPlanet[0];
+            _shipAnchorToThisPlanet.Remove(shipWhoSacrificeFOrOther);
+            Destroy(shipWhoSacrificeFOrOther.gameObject);
+            GameMaster.Instance.AddCasualties(1);
+        }
+        
     }
-    public void destroyShipAnchor(int numberOfShipToDestroy)
+    public void destroyShipAnchor(List<Ship> ShipsToAdd)
     {
-        _shipAnchorToThisPlanet += numberOfShipToDestroy;
+        foreach (Ship ship in ShipsToAdd)
+            destroyAShipAnchor();
     }
 
     public int getNumberOfShipOnIt()
     {
-        return _shipAnchorToThisPlanet;
+        return _shipAnchorToThisPlanet.Count;
     }
+
+    public void GoOrbit(Ship ship)
+    {
+        addShipAnchor(ship);
+        ship.transform.SetParent(orbit.transform);
+        Quaternion q = ship.transform.localRotation;
+        q.eulerAngles += eulerAnglesRotationOfShipInOrbit;
+        ship.transform.localRotation = q;
+    }
+
 
     private void OnMouseDown()
     {
-        print("Down");
         GameMaster.Instance.cursorCreator.Create();
     }
 
@@ -54,7 +75,6 @@ public abstract class Planet : MonoBehaviour {
     {
         Home home;
 
-        print("Up");
         target = GameMaster.Instance.cursorCreator.ReturnTargetAndDisappear();
         if (target != null)
         {
