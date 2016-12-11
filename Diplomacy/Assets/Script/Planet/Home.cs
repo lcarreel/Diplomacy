@@ -219,7 +219,7 @@ public class Home : Planet {
             if (inOGU)
             {
                 shipCreate.GoToOGU();
-//                _audioSource.PlayOneShot(spawnAmoi);
+                _audioSource.PlayOneShot(spawnAmoi);
             }
             else
             {
