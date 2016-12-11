@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
     using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class PauseMenu : MonoBehaviour {
@@ -20,6 +21,11 @@ public class PauseMenu : MonoBehaviour {
     public void QuitGame()
     {
         Application.Quit();
+    }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene("Space01");
     }
 
     public void EndGameDisplay(float score)

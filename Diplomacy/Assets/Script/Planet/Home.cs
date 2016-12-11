@@ -46,7 +46,7 @@ public class Home : Planet {
         homeUI = Instantiate(GameMaster.Instance.homeUI).GetComponent<HomeUI>();
         homeUI.transform.SetParent(GameMaster.Instance.canvasWorld.transform);
         homeUI.transform.position = this.transform.position;
-        homeUI.transform.localScale = Vector3.one;
+        homeUI.transform.localScale = Vector3.one*0.8f;
         homeUI.name = "HomeUI of " + nameInGame;
 
         SetCivil( (int)UnityEngine.Random.Range(50,230) );
