@@ -18,8 +18,16 @@ public abstract class Planet : MonoBehaviour {
     private GameObject target;
 
     private Animator _animator;
-    
+
+    protected AudioSource _audioSource;
+    public AudioClip destroyShipSound;
+
     //Method part
+
+    private void Awake()
+    {
+        _audioSource = GetComponent<AudioSource>();
+    }
 
     public void addShipAnchor(Ship ship)
     {
@@ -36,6 +44,7 @@ public abstract class Planet : MonoBehaviour {
     {
         if (_shipAnchorToThisPlanet.Count != 0)
         {
+            _audioSource.PlayOneShot(destroyShipSound);
             Ship shipWhoSacrificeFOrOther = _shipAnchorToThisPlanet[0];
             _shipAnchorToThisPlanet.Remove(shipWhoSacrificeFOrOther);
             Destroy(shipWhoSacrificeFOrOther.gameObject);

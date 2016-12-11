@@ -19,6 +19,7 @@ public class Ship : MonoBehaviour {
     public AudioClip selectMining;
     public AudioClip sendToWar;
     public AudioClip sendToMine;
+    public AudioClip destroyShip;
 
     private void Awake()
     {
@@ -94,7 +95,7 @@ public class Ship : MonoBehaviour {
             _animator.SetBool("HighLight", false);
             if (target.GetComponent<Resources>() && target.GetComponent<Resources>().GetFlux().Count == 0)
                 _audioSource.PlayOneShot(sendToMine);
-            if (!target.GetComponent<Planet>().inOGU)
+            else if (target.GetComponent<Planet>() && !target.GetComponent<Planet>().inOGU)
                 _audioSource.PlayOneShot(sendToWar);
         }
 
@@ -214,6 +215,7 @@ public class Ship : MonoBehaviour {
 
     private void DestroyShip()
     {
+        _audioSource.PlayOneShot(destroyShip);
         if (origin.wholeBadArmada.Contains(this))
             origin.wholeBadArmada.Remove(this);
         GameMaster.Instance.AddCasualties(1);
