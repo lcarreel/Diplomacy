@@ -61,15 +61,23 @@ public class Resources : Planet {
 
     public void SetFlux(Home planet, Flux flux)
     {
+        int exists = 0;
         //ParticleSystem paticle_system;
+        foreach (Flux flu in _flux)
+        {
+            if (flu.GetHomePlanet() == planet)
+                exists = 1;
+        }
+        if (exists == 0 && _flux.Count < 4)
+        {
+            flux.SetHomePlanet(planet);
+            _flux.Add(flux);
+            UpdateFluxValues();
+            flux.CreateFlux(GetComponent<Resources>(), planet);
 
-        flux.SetHomePlanet(planet);
-        _flux.Add(flux);
-        UpdateFluxValues();
-        flux.CreateFlux(GetComponent<Resources>(), planet);
-
-        print(flux.GetResources());
-        print(flux.GetHomePlanet().ToString());
+            print(flux.GetResources());
+            print(flux.GetHomePlanet().ToString());
+        }
     }
 
     public void removeFlux(Flux flux)
