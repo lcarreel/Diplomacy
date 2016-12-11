@@ -44,7 +44,7 @@ public abstract class Planet : MonoBehaviour {
     {
         if (_shipAnchorToThisPlanet.Count != 0)
         {
-            _audioSource.PlayOneShot(destroyShipSound);
+            _audioSource.PlayOneShot(destroyShipSound, 0.1f);
             Ship shipWhoSacrificeFOrOther = _shipAnchorToThisPlanet[0];
             _shipAnchorToThisPlanet.Remove(shipWhoSacrificeFOrOther);
             shipWhoSacrificeFOrOther.DestroyShip();

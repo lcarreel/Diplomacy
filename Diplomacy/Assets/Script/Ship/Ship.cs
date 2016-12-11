@@ -81,9 +81,9 @@ public class Ship : MonoBehaviour {
             _animator.SetBool("HighLight", true);
             GameMaster.Instance.cursorCreator.Create(this.gameObject);
             if (location.GetComponent<Home>())
-                _audioSource.PlayOneShot(selectIdle);
+                _audioSource.PlayOneShot(selectIdle, 0.1f);
             else if (location.GetComponent<Resources>())
-                _audioSource.PlayOneShot(selectMining);
+                _audioSource.PlayOneShot(selectMining, 0.1f);
         }
     }
     private void OnMouseDrag()
@@ -106,9 +106,9 @@ public class Ship : MonoBehaviour {
             _rigidbody2D.isKinematic = false;
             _animator.SetBool("HighLight", false);
             if (target.GetComponent<Resources>() && target.GetComponent<Resources>().GetFlux().Count == 0)
-                _audioSource.PlayOneShot(sendToMine);
+                _audioSource.PlayOneShot(sendToMine, 0.1f);
             else if (target.GetComponent<Planet>() && !target.GetComponent<Planet>().inOGU)
-                _audioSource.PlayOneShot(sendToWar);
+                _audioSource.PlayOneShot(sendToWar, 0.1f);
         }
 
     }
@@ -258,7 +258,7 @@ public class Ship : MonoBehaviour {
 
     public void DestroyShip()
     {
-        _audioSource.PlayOneShot(destroyShip);
+        _audioSource.PlayOneShot(destroyShip, 0.1f);
         if (origin.wholeBadArmada.Contains(this))
             origin.wholeBadArmada.Remove(this);
         GameMaster.Instance.AddCasualties(1);
