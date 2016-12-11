@@ -58,7 +58,8 @@ public class Flux : MonoBehaviour {
     //Give ressources
     public void GiveResourcesToHomePlanet()
     {
-        home_planet.AddRessources(resources);
+        if(Time.deltaTime != 0)
+            home_planet.AddRessources(resources);
     }
 
 }

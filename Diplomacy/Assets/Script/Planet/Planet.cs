@@ -68,7 +68,7 @@ public abstract class Planet : MonoBehaviour {
         if (_animator == null)
             _animator = GetComponent<Animator>();
         _animator.SetBool("HighLight", true);
-        GameMaster.Instance.cursorCreator.Create();
+        GameMaster.Instance.cursorCreator.Create(this.gameObject);
     }
 
     private void OnMouseDrag()

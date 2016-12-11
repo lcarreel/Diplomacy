@@ -15,10 +15,14 @@ public class cursorTarget : MonoBehaviour {
 
     public float fadeSpeed = 3;
 
+    public GameObject origin;
+
     //Component :
     SpriteRenderer _spriteRenderer;
     CircleCollider2D _circleCollider2D;
     Rigidbody2D _rigidbody2D;
+
+    private GameObject targetUnderCursor = null;
 
     private void Start()
     {
@@ -73,6 +77,8 @@ public class cursorTarget : MonoBehaviour {
                 shipOver.ChangeKinematicState(true);
             }
         }
+
+        calculateTarget();
     }
 
     private void CollisionExitManagement(Collision2D collision)
@@ -103,25 +109,45 @@ public class cursorTarget : MonoBehaviour {
     }
 
 
-    public GameObject calculateTarget()
+    public GameObject getTarget()
     {
-        GameObject res = null;
         seekingTarget = false;
         DeactivateCollider();
+        calculateTarget();
+        foreach (Ship ship in shipUnderCursor)
+            ship.ChangeKinematicState(false);
+        if (targetUnderCursor != null)
+            if (targetUnderCursor.GetComponent<Animator>())
+                targetUnderCursor.GetComponent<Animator>().SetBool("HighLight", false);
+        return targetUnderCursor;
+    }
+
+    public void calculateTarget()
+    {
+        GameObject res = null;
         //ship
         if (shipUnderCursor.Count != 0)
         {
             res = shipUnderCursor[0].gameObject;
-            foreach (Ship ship in shipUnderCursor)
-                ship.ChangeKinematicState(false);
         }
         //planet
-         else if (planetUnderCursor.Count != 0)
+        else if (planetUnderCursor.Count != 0)
+        {
             res = planetUnderCursor[0].gameObject;
+        }
         //flux
         else if (fluxUnderCursor.Count != 0)
+        {
             res = fluxUnderCursor[0].gameObject;
-        return res;
+        }
+        if (targetUnderCursor != null)
+            if(targetUnderCursor != origin)
+            if (targetUnderCursor.GetComponent<Animator>())
+                targetUnderCursor.GetComponent<Animator>().SetBool("HighLight",false);
+        targetUnderCursor = res;
+        if (res != null)
+            if (res.GetComponent<Animator>())
+                res.GetComponent<Animator>().SetBool("HighLight", true);
     }
 
     public void ActivateCollider()

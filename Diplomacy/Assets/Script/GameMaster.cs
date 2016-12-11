@@ -15,8 +15,9 @@ public class GameMaster : MonoBehaviour {
     private List<Sprite> resourcesVisualIron = new List<Sprite>();
 
     public List<Sprite> supplyIcon = new List<Sprite>();
-
-    public int totalOfHome = 0;
+    
+    public List<Home> allHomePlanets = new List<Home>();
+    public List<Resources> allResourcesPlanets = new List<Resources>();
 
     void Awake()
     {
@@ -29,13 +30,16 @@ public class GameMaster : MonoBehaviour {
             Destroy(gameObject);
         }
 
-        totalOfHome = 0;
+        allHomePlanets.Clear();
+        allResourcesPlanets.Clear();
         List<UtilType.PlanetID> nameUsed = new List<UtilType.PlanetID>();
         foreach(Planet planet in FindObjectsOfType<Planet>())
         {
             TryRandomTillSuccess(planet, nameUsed);
-            if(planet.GetComponent<Home>())
-                totalOfHome++;
+            if (planet.GetComponent<Home>())
+                allHomePlanets.Add(planet.GetComponent<Home>());
+            else
+                allResourcesPlanets.Add(planet.GetComponent<Resources>());
         }
 
     }
@@ -172,7 +176,7 @@ public class GameMaster : MonoBehaviour {
 
     private void UpdateProgressWindow(int progress)
     {
-        progressUI.text = progress + "/" + totalOfHome + " planet in peace";
+        progressUI.text = progress + "/" + allHomePlanets.Count + " planet in peace";
     }
 
     #endregion

@@ -7,12 +7,13 @@ public class cursorCreator : MonoBehaviour {
     private GameObject cursorTargetPrefab;
     private cursorTarget cursorTarget;
 
-    public void Create()
+    public void Create(GameObject origin)
     {
         if (cursorTarget == null)
             cursorTarget = Instantiate(cursorTargetPrefab).GetComponent<cursorTarget>();
         cursorTarget.transform.position = (Vector2)GameMaster.Instance.currentCamera.ScreenToWorldPoint(Input.mousePosition);
         cursorTarget.ActivateCollider();
+        cursorTarget.origin = origin;
     }
 
     public void UpdatePosition()
@@ -22,7 +23,7 @@ public class cursorCreator : MonoBehaviour {
 
     public GameObject ReturnTargetAndDisappear()
     {
-        GameObject res = cursorTarget.calculateTarget();
+        GameObject res = cursorTarget.getTarget();
         cursorTarget.disappear();
         cursorTarget = null;
         return res;

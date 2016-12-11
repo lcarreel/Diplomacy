@@ -153,6 +153,12 @@ public class Home : Planet {
 
     public void AddCivilPeriodically()
     {
+        if (Time.timeScale != 0)
+            AddCivilNow();
+    }
+    private void AddCivilNow()
+    {
+
         iron -= civil / StaticValue.consomation;
         if (iron < 0)
             iron = 0;
@@ -166,12 +172,12 @@ public class Home : Planet {
         {
             SetCivil(GetCivil() + 1);
             SetMood(mood + 1);
-            if(iron >= ironNeeded*2 || food >= foodNeeded*2 || powr >= powrNeeded*2)
+            if (iron >= ironNeeded * 2 || food >= foodNeeded * 2 || powr >= powrNeeded * 2)
                 SetMood(mood + 2);
         }
         else
         {
-            SetMood(mood-1);
+            SetMood(mood - 1);
             if (iron < ironNeeded && food < foodNeeded && powr < powrNeeded)
             {
                 SetCivil(GetCivil() - 1);
@@ -182,18 +188,22 @@ public class Home : Planet {
     }
     public void CreateShip()
     {
-        Ship shipCreate = Instantiate( GameMaster.Instance.ship).GetComponent<Ship>();
-        shipCreate.transform.position = this.transform.position + ((Vector3)Vector2.right);
-        shipCreate.transform.SetParent(orbit.transform);
-        this.addShipAnchor(shipCreate);
-        //define shipCamp
-        shipCreate.origin = this;
-        if(inOGU)
-            shipCreate.GoToOGU();
-        else
+        if (Time.deltaTime != 0)
         {
-            wholeBadArmada.Add(shipCreate);
+            Ship shipCreate = Instantiate(GameMaster.Instance.ship).GetComponent<Ship>();
+            shipCreate.transform.position = this.transform.position + ((Vector3)Vector2.right);
+            shipCreate.transform.SetParent(orbit.transform);
+            this.addShipAnchor(shipCreate);
+            //define shipCamp
+            shipCreate.origin = this;
+            if (inOGU)
+                shipCreate.GoToOGU();
+            else
+            {
+                wholeBadArmada.Add(shipCreate);
+            }
         }
+        
     }
 
 

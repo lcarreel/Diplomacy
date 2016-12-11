@@ -42,7 +42,7 @@ public class Ship : MonoBehaviour {
         {
             _rigidbody2D.isKinematic = true;
             _animator.SetBool("HighLight", true);
-            GameMaster.Instance.cursorCreator.Create();
+            GameMaster.Instance.cursorCreator.Create(this.gameObject);
         }
     }
     private void OnMouseDrag()
