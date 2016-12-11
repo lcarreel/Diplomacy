@@ -17,6 +17,8 @@ public class Ship : MonoBehaviour {
     private AudioSource _audioSource;
     public AudioClip selectIdle;
     public AudioClip selectMining;
+    public AudioClip sendToWar;
+    public AudioClip sendToMine;
 
     private void Awake()
     {
@@ -86,10 +88,16 @@ public class Ship : MonoBehaviour {
             if (target != null)
             {
                 StartCoroutine(GoToTargetPoint(speed));
+
             }
             _rigidbody2D.isKinematic = false;
             _animator.SetBool("HighLight", false);
+            if (target.GetComponent<Resources>() && target.GetComponent<Resources>().GetFlux().Count == 0)
+                _audioSource.PlayOneShot(sendToMine);
+            if (!target.GetComponent<Planet>().inOGU)
+                _audioSource.PlayOneShot(sendToWar);
         }
+
     }
     #endregion
 
