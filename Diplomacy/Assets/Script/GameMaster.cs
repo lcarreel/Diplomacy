@@ -7,6 +7,9 @@ public class GameMaster : MonoBehaviour {
 
     public static GameMaster Instance;
 
+    public UtilType.Difficulty difficulty = UtilType.Difficulty.Normal;
+    public UtilType.Speed speed = UtilType.Speed.CruisingSpeed;
+
     [SerializeField]
     private List<Sprite> resourcesVisualPowr = new List<Sprite>();
     [SerializeField]
@@ -40,6 +43,40 @@ public class GameMaster : MonoBehaviour {
                 allHomePlanets.Add(planet.GetComponent<Home>());
             else
                 allResourcesPlanets.Add(planet.GetComponent<Resources>());
+        }
+
+
+        switch (difficulty)
+        {
+            case UtilType.Difficulty.Easy:
+                StaticValue.production = 24;
+                StaticValue.consomation = 6;
+                StaticValue.numberOfCivilDeadByShip = 6;
+                break;
+            case UtilType.Difficulty.Normal:
+                break;
+            case UtilType.Difficulty.Hard:
+                StaticValue.consomation = 12;
+                break;
+            case UtilType.Difficulty.Hell:
+                StaticValue.consomation = 12;
+                StaticValue.numberOfCivilDeadByShip = 24;
+                break;
+        }
+        switch (speed)
+        {
+            case UtilType.Speed.FirstStep:
+                StaticValue.tempo = 2f;
+                break;
+            case UtilType.Speed.CruisingSpeed:
+                StaticValue.tempo = 1f;
+                break;
+            case UtilType.Speed.High:
+                StaticValue.tempo = 0.5f;
+                break;
+            case UtilType.Speed.LightSpeed:
+                StaticValue.tempo = 0.1f;
+                break;
         }
 
     }

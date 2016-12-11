@@ -139,16 +139,19 @@ public class Ship : MonoBehaviour {
         }
         else
         {
+            Resources resources = planetAttacked.GetComponent<Resources>();
             if (inOGU)
             {
                 //IMPORTANT : planetAttacked != Home ! (because of the previous else)
-                planetAttacked.inOGU = true;
+                resources.joinOGU();
             } else
             {
-                planetAttacked.inOGU = false;
-                Resources resources = planetAttacked.GetComponent<Resources>();
-                if (resources)
-                    resources.SetFlux(origin, gameObject.AddComponent<Flux>());
+                resources.quitOGU();
+                foreach(Flux flux in resources.GetFlux())
+                {
+                    resources.removeFlux(flux);
+                }
+                resources.SetFlux(origin, gameObject.AddComponent<Flux>());
             }
             planetAttacked.GoOrbit(this);
         }

@@ -65,39 +65,47 @@ public abstract class Planet : MonoBehaviour {
 
     private void OnMouseDown()
     {
-        if (_animator == null)
-            _animator = GetComponent<Animator>();
-        _animator.SetBool("HighLight", true);
-        GameMaster.Instance.cursorCreator.Create(this.gameObject);
+        if (inOGU)
+        {
+            if (_animator == null)
+                _animator = GetComponent<Animator>();
+            _animator.SetBool("HighLight", true);
+            GameMaster.Instance.cursorCreator.Create(this.gameObject);
+        }
+        
     }
 
     private void OnMouseDrag()
     {
-        GameMaster.Instance.cursorCreator.UpdatePosition();
+        if(inOGU)
+            GameMaster.Instance.cursorCreator.UpdatePosition();
     }
 
     private void OnMouseUp()
     {
-        Home home;
-
-        target = GameMaster.Instance.cursorCreator.ReturnTargetAndDisappear();
-        if (target != null)
+        if (inOGU)
         {
-            if (target.GetComponent<Home>())
+            Home home;
+
+            target = GameMaster.Instance.cursorCreator.ReturnTargetAndDisappear();
+            if (target != null)
             {
-                home = target.GetComponent<Home>();
-                //TODO VERIFICATION FLUX EXISTE OU NON
-                if (GetComponent<Resources>())
-                    GetComponent<Resources>().SetFlux(home, gameObject.AddComponent<Flux>());
+                if (target.GetComponent<Home>())
+                {
+                    home = target.GetComponent<Home>();
+                    //TODO VERIFICATION FLUX EXISTE OU NON
+                    if (GetComponent<Resources>())
+                        GetComponent<Resources>().SetFlux(home, gameObject.AddComponent<Flux>());
+                }
+                else if (target.GetComponent<Resources>())
+                {
+
+                }
+                print("target ok");
             }
-            else if (target.GetComponent<Resources>())
-            {
-                                
-            }
-            print("target ok");
+            if (_animator == null)
+                _animator = GetComponent<Animator>();
+            _animator.SetBool("HighLight", false);
         }
-        if (_animator == null)
-            _animator = GetComponent<Animator>();
-        _animator.SetBool("HighLight", false);
     }
 }
