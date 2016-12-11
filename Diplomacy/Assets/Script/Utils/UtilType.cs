@@ -10,6 +10,21 @@ public static class UtilType {
         Iron
     }
 
+    public enum Difficulty
+    {
+        Easy,
+        Normal,
+        Hard,
+        Hell
+    }
+    public enum Speed
+    {
+        FirstStep,
+        CruisingSpeed,
+        High,
+        LightSpeed,
+    }
+
     public enum PlanetID
     {
         Forky,
@@ -32,6 +47,22 @@ public static class UtilType {
         Karimor,
         Kalimanchot,
         Gerbesaltes,
-        Garufle
+        Garufle,
+
+        Turbomedia,
+        Cléophée,
+        Ancelade,
+        Xavnille,
+        Karantdeu,
+        Fotochoppe,
+        Icaras,
+        Caelius,
+        Arverne,
+        Asimov,
+        Aldana,
+        Boushtrou,
+        Gagne,
+        Kafay,
+        Enka
     }
 }

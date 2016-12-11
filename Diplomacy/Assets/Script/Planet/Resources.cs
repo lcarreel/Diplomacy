@@ -11,6 +11,10 @@ public class Resources : Planet {
     [SerializeField]
     private List<SpriteRenderer> slotVisual = new List<SpriteRenderer>();
 
+    [SerializeField]
+    private SpriteRenderer haloOut;
+    [SerializeField]
+    private SpriteRenderer haloOGU;
 
     private ResourcesUI resourcesUI;
 
@@ -42,8 +46,22 @@ public class Resources : Planet {
 
         resourcesUI.UpdateIcon(slot);
 
+        joinOGU();
+
     }
     #endregion
+
+    public void joinOGU()
+    {
+        haloOGU.gameObject.SetActive(true);
+        haloOut.gameObject.SetActive(false);
+    }
+    public void quitOGU()
+    {
+        haloOGU.gameObject.SetActive(false);
+        haloOut.gameObject.SetActive(true);
+    }
+
 
     private void UpdateFluxValues()
     {
@@ -55,11 +73,11 @@ public class Resources : Planet {
         foreach(UtilType.Supply resource in slot)
         {
             if (resource == UtilType.Supply.Food)
-                food += 12;
+                food += StaticValue.production;
             else if (resource == UtilType.Supply.Iron)
-                iron += 12;
+                iron += StaticValue.production;
             else if (resource == UtilType.Supply.Powr)
-                powr += 12;
+                powr += StaticValue.production;
         }
         foreach(Flux flux in _flux)
         {

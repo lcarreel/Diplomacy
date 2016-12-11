@@ -8,7 +8,8 @@ public class CameraControl : MonoBehaviour {
     public int maxSize = 20;
     public int minSize = 4;
 
-    public float cameraSpeed = 5;
+    public float camaeraSpeedMultiplier = 1.5f;
+    private float cameraSpeed = 5;
 
     public Vector2 screenBorder = new Vector2(29,16);
     private Vector2 positionLimit = new Vector2(29,16);
@@ -28,15 +29,15 @@ public class CameraControl : MonoBehaviour {
         float scrollValue = Input.GetAxis("Mouse ScrollWheel");
         if (scrollValue > 0) // forward
         {
-            _camera.orthographicSize = Mathf.Max(Camera.main.orthographicSize - 1, minSize);
+            _camera.orthographicSize = Mathf.Max(Camera.main.orthographicSize - 0.5f, minSize);
             float zoomGap = maxSize - Camera.main.orthographicSize;
-            cameraSpeed = zoomGap;
+            cameraSpeed = zoomGap * camaeraSpeedMultiplier;
             positionLimit = stepForBorder * zoomGap;
         } else if(scrollValue < 0)
         {
-            _camera.orthographicSize = Mathf.Min(Camera.main.orthographicSize + 1, maxSize);
+            _camera.orthographicSize = Mathf.Min(Camera.main.orthographicSize + 0.5f, maxSize);
             float zoomGap = maxSize - Camera.main.orthographicSize;
-            cameraSpeed = zoomGap;
+            cameraSpeed = zoomGap * camaeraSpeedMultiplier;
             positionLimit = stepForBorder * zoomGap;
         }
 
