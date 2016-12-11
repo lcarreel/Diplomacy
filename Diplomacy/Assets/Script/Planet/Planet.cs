@@ -23,6 +23,7 @@ public abstract class Planet : MonoBehaviour {
 
     public void addShipAnchor(Ship ship)
     {
+        ship.SetLocation(GetComponent<Planet>());
         _shipAnchorToThisPlanet.Add(ship);
     }
     public void addShipAnchor(List<Ship> ShipsToAdd)
