@@ -32,7 +32,7 @@ public class Flux : MonoBehaviour {
         angle = (dest.transform.position.y >= origin.transform.position.y ? angle : angle + 180);
 
         fluxParticle.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, (float)angle);
-        print(fluxParticle);
+//        print(fluxParticle);
         distance = System.Math.Sqrt(x * x + y * y);
         fluxParticle.GetComponent<ParticleSystem>().startLifetime = (float)distance / 2.5f;
 

@@ -37,7 +37,7 @@ public abstract class Planet : MonoBehaviour {
         {
             Ship shipWhoSacrificeFOrOther = _shipAnchorToThisPlanet[0];
             _shipAnchorToThisPlanet.Remove(shipWhoSacrificeFOrOther);
-            Destroy(shipWhoSacrificeFOrOther.gameObject);
+            shipWhoSacrificeFOrOther.DestroyShip();
             GameMaster.Instance.AddCasualties(1);
         }
         
@@ -45,13 +45,23 @@ public abstract class Planet : MonoBehaviour {
     public void destroyShipAnchor(List<Ship> ShipsToAdd)
     {
         foreach (Ship ship in ShipsToAdd)
+        {
             destroyAShipAnchor();
+            ship.name += " abandonned";
+        }
     }
 
     public int getNumberOfShipOnIt()
     {
         return _shipAnchorToThisPlanet.Count;
     }
+
+    public Planet getFatherOfShipOnIt()
+    {
+        return _shipAnchorToThisPlanet[0].origin;
+    }
+
+    public abstract Vector3 getSupplyValue();
 
     public void GoOrbit(Ship ship)
     {

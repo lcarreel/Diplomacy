@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class Home : Planet {
 
@@ -39,19 +40,19 @@ public class Home : Planet {
         homeUI.transform.localScale = Vector3.one;
         homeUI.name = "HomeUI of " + nameInGame;
 
-        SetCivil( (int)Random.Range(50,230) );
+        SetCivil( (int)UnityEngine.Random.Range(50,230) );
         InvokeRepeating( "AddCivilPeriodically", StaticValue.tempo, StaticValue.tempo);
-        InvokeRepeating( "CreateShip", Random.Range(0, StaticValue.tempo * shipCreationRange), StaticValue.tempo * shipCreationRange);
+        InvokeRepeating( "CreateShip", UnityEngine.Random.Range(0, StaticValue.tempo * shipCreationRange), StaticValue.tempo * shipCreationRange);
 
         foodNeeded = civil+1;
         powrNeeded = civil+1;
         ironNeeded = civil+1;
 
-        food = (int)Random.Range(100, 280);
-        iron = (int)Random.Range(100, 280);
-        powr = (int)Random.Range(100, 280);
+        food = (int)UnityEngine.Random.Range(100, 280);
+        iron = (int)UnityEngine.Random.Range(100, 280);
+        powr = (int)UnityEngine.Random.Range(100, 280);
 
-        SetMood((int)Random.Range(25, 100));
+        SetMood((int)UnityEngine.Random.Range(25, 100));
         if(mood > 60)
         {
             joinOGU();
@@ -102,19 +103,28 @@ public class Home : Planet {
     private void quitOGU()
     {
         inOGU = false;
-        haloOGU.enabled = false;
-        haloOut.enabled = true;
+        haloOGU.gameObject.SetActive(false);
+        haloOut.gameObject.SetActive(true);
 
-        //TO DO : Kill all ship near him or convert their ?
+        //TO DO : Kill all ship near him or convert their 
+        
+        foreach(Ship ship in _shipAnchorToThisPlanet)
+        {
+            //convert :
+            ship.GetOutOGU();
+            //kill
+            //ship.DestroyShip();
+        }
 
+        AttackAroundHim();
 
         GameMaster.Instance.RemovePlanetInPeace();
     }
     private void joinOGU()
     {
         inOGU = true;
-        haloOGU.enabled = true;
-        haloOut.enabled = false;
+        haloOGU.gameObject.SetActive(true);
+        haloOut.gameObject.SetActive(false);
         foreach(Ship ship in wholeBadArmada)
         {
             ship.GoToOGU();
@@ -200,6 +210,7 @@ public class Home : Planet {
                 shipCreate.GoToOGU();
             else
             {
+                shipCreate.GetOutOGU();
                 wholeBadArmada.Add(shipCreate);
             }
         }
@@ -224,7 +235,23 @@ public class Home : Planet {
         UpdateValueAndVisual();
     }
 
-
+    public override Vector3 getSupplyValue()
+    {
+        Vector3 res = Vector3.zero;
+        if (food < 0)
+        {
+            res += Vector3.right;
+        }
+        if (iron < 0)
+        {
+            res += Vector3.up;
+        }
+        if (powr < 0)
+        {
+            res += Vector3.forward;
+        }
+        return new Vector3();
+    }
     #endregion
 
 
@@ -232,9 +259,143 @@ public class Home : Planet {
 
     #region IA
 
+    Vector3 supplyWanted = Vector3.zero;
+
+    Radar radar;
+
+    private void AttackAroundHim()
+    {
+        //First IA Method
+        UpdateSupplyWanted();
+        if(!inOGU && supplyWanted.magnitude > 0)
+        {
+            StartCoroutine(seekForPlanetToInvade());
+        }
+    }
+    private IEnumerator seekForPlanetToInvade()
+    {
+        if(radar == null)
+            radar = Instantiate(GameMaster.Instance.radar).GetComponent<Radar>();
+        radar.transform.position = this.transform.position;
+        radar.origin = this;
+        radar.keepSeeking = true;
+        yield return new WaitUntil(() => (radar.planetTouched.Count >= 5));
+        radar.keepSeeking = false;
+
+        TreatmentRadarDate(radar.planetTouched);
+
+    }
+
+    private IEnumerator seekForMorePlanetToInvade()
+    {
+        radar.origin = this;
+        radar.keepSeeking = true;
+        radar.planetTouched.Clear();
+        yield return new WaitUntil(() => (radar.planetTouched.Count >= 5));
+        radar.keepSeeking = false;
+
+        TreatmentRadarDate(radar.planetTouched);
+    }
+
+    private void TreatmentRadarDate(List<Planet> planetData)
+    {
+        List<Planet> noRisk = new List<Planet>();
+        List<float> risqueLvl = new List<float>();
+        int planetUseless = planetData.Count;
+        foreach(Planet planet in planetData)
+        {
+            if (planet.getNumberOfShipOnIt() == 0)
+            {
+                noRisk.Add(planet);
+                risqueLvl.Add(2047);
+            }
+            else if(planet.getFatherOfShipOnIt().gameObject == this.gameObject)
+                {
+                    planetUseless++;
+                    risqueLvl.Add(2047);
+            }
+            else
+            {
+                float riskValue = (planet.transform.position - transform.position).magnitude;
+                riskValue *= (planet.getNumberOfShipOnIt() + 1);
+                float supplyValue = planet.getSupplyValue().x * supplyWanted.x + planet.getSupplyValue().y * supplyWanted.y + planet.getSupplyValue().z * supplyWanted.z;
+                if(supplyValue == 0)
+                {
+                    planetUseless++;
+                    risqueLvl.Add(2047);
+                } else
+                {
+                    riskValue /= supplyValue;
+                    risqueLvl.Add(riskValue);
+                }
+            }
+
+        } // fin du foreach
+
+        if(planetUseless == 0)
+        {
+            StartCoroutine(seekForMorePlanetToInvade());
+        } else
+        {
+            Destroy(radar.gameObject);
+            ChooseBestPlanet(planetData, noRisk, risqueLvl);
+        }
+        //if no risk ==> verifier si resources ou home
+    }
+
+    private void ChooseBestPlanet(List<Planet> planetData, List<Planet> noRisk, List<float> risqueLvl )
+    {
+        int maxIndex = 0;
+        for ( int i = 0; i < risqueLvl.Count; i++ )
+        {
+            if(risqueLvl[i] > risqueLvl[maxIndex])
+            {
+                maxIndex = i;
+            }
+        }
+        noRisk.Add(planetData[maxIndex]);
+        LaunchShipTo(noRisk);
+    }
+
+    private void LaunchShipTo(List<Planet> planetToInvade)
+    {
+        foreach (Planet planet in planetToInvade)
+        {
+            LaunchIndividualShipTo(planet);
+            //envoie getNumberOfShipOnIt + 1
+        }
+    }
+
+    private void LaunchIndividualShipTo(Planet planet)
+    {
+        if (this.getNumberOfShipOnIt() > 0)
+        {
+            _shipAnchorToThisPlanet[0].GoToPlanetByIA(planet);
+            _shipAnchorToThisPlanet.Remove(_shipAnchorToThisPlanet[0]);
+        } else
+        {
+            Invoke("AttackAroundHim",5*StaticValue.tempo);
+        }
+    }
 
 
 
+    private void UpdateSupplyWanted()
+    {
+        supplyWanted = Vector3.zero;
+        if (food < foodNeeded)
+        {
+            supplyWanted += Vector3.right;
+        } 
+        if(iron < ironNeeded)
+        {
+            supplyWanted += Vector3.up;
+        }
+        if (powr < powrNeeded)
+        {
+            supplyWanted += Vector3.forward;
+        }
+    } 
 
 
     #endregion

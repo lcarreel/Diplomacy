@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class Resources : Planet {
 
@@ -32,7 +33,7 @@ public class Resources : Planet {
         UtilType.Supply randomValue = UtilType.Supply.Food;
         for (int i = 0; i < 3; i++)
         {
-            int randomInt = Random.Range(0, 3);
+            int randomInt = UnityEngine.Random.Range(0, 3);
             if (randomInt < 1)
                 randomValue = UtilType.Supply.Powr;
             else if (randomInt < 2)
@@ -53,11 +54,13 @@ public class Resources : Planet {
 
     public void joinOGU()
     {
+        inOGU = true;
         haloOGU.gameObject.SetActive(true);
         haloOut.gameObject.SetActive(false);
     }
     public void quitOGU()
     {
+        inOGU = false;
         haloOGU.gameObject.SetActive(false);
         haloOut.gameObject.SetActive(true);
     }
@@ -115,5 +118,42 @@ public class Resources : Planet {
     {
         _flux.Remove(flux);
         UpdateFluxValues();
-    } 
+    }
+
+    public void emptyFlux()
+    {
+        print("Emptied + "+this.name);
+        List<Flux> _tmp = new List<Flux>();
+        foreach (Flux flux in _flux)
+        {
+            _tmp.Add(flux);
+        }
+        _flux.Clear();
+        foreach (Flux flux in _tmp)
+        {
+            Destroy(flux);
+        }
+    }
+
+
+    public override Vector3 getSupplyValue()
+    {
+        Vector3 res = Vector3.zero;
+        foreach (UtilType.Supply supply in slot)
+        {
+            switch (supply)
+            {
+                case UtilType.Supply.Food:
+                    res += Vector3.right;
+                    break;
+                case UtilType.Supply.Iron:
+                    res += Vector3.up;
+                    break;
+                case UtilType.Supply.Powr:
+                    res += Vector3.forward;
+                    break;
+            }
+        }
+        return res;
+    }
 }

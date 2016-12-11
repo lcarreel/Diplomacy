@@ -108,6 +108,7 @@ public class GameMaster : MonoBehaviour {
     public GameObject fluxParticles;
     public GameObject homeUI;
     public GameObject resourcesUI;
+    public GameObject radar;
     
     public GameObject canvasWorld;
     public GameObject canvasCamera;
