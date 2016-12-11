@@ -29,7 +29,6 @@ public class Resources : Planet {
             slotVisual[i].sprite = GameMaster.Instance.getResourcesVisual(i, randomValue);
 
         }
-        print(slot.Count + " slot taken");
     }
     #endregion
 

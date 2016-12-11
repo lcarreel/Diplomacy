@@ -122,6 +122,8 @@ public class Ship : MonoBehaviour {
 
     public void ChangeKinematicState(bool value)
     {
+        if (_rigidbody2D == null)
+            _rigidbody2D = GetComponent<Rigidbody2D>();
         _rigidbody2D.isKinematic = value;
     }
 

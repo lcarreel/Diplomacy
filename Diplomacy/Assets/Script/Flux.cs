@@ -33,6 +33,9 @@ public class Flux : MonoBehaviour {
         print(fluxParticle);
         distance = System.Math.Sqrt(x * x + y * y);
         fluxParticle.GetComponent<ParticleSystem>().startLifetime = (float)distance / 2.5f;
+
+
+        InvokeRepeating("GiveResourcesToHomePlanet", StaticValue.tempo * Time.deltaTime, StaticValue.tempo * Time.deltaTime);
     }
 
     public Vector3 GetResources()
@@ -49,4 +52,11 @@ public class Flux : MonoBehaviour {
     {
         return home_planet;
     }
+
+    //Give ressources
+    public void GiveResourcesToHomePlanet()
+    {
+        home_planet.AddRessources(resources);
+    }
+
 }

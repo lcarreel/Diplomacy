@@ -42,7 +42,7 @@ public class CameraControl : MonoBehaviour {
 
         float posX = Input.mousePosition.x;
         float posY = Input.mousePosition.y;
-        print(posX +", "+posY+" this = "+ this.transform.position+" against limit : "+ positionLimit);
+
         if (posX > (Screen.width * 0.9) && this.transform.position.x < positionLimit.x)
         {
             this.transform.position += (Vector3)(Vector2.right * Time.deltaTime * cameraSpeed);

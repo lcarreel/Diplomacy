@@ -10,9 +10,11 @@ public class GameMaster : MonoBehaviour {
     [SerializeField]
     private List<Sprite> resourcesVisualPowr = new List<Sprite>();
     [SerializeField]
-    public List<Sprite> resourcesVisualFood = new List<Sprite>();
+    private List<Sprite> resourcesVisualFood = new List<Sprite>();
     [SerializeField]
-    public List<Sprite> resourcesVisualIron = new List<Sprite>();
+    private List<Sprite> resourcesVisualIron = new List<Sprite>();
+
+    public List<Sprite> supplyIcon = new List<Sprite>();
 
     void Awake()
     {
@@ -38,6 +40,11 @@ public class GameMaster : MonoBehaviour {
 
     public GameObject ship;
     public GameObject fluxParticles;
+    public GameObject homeUI;
+    public GameObject resourcesUI;
+    
+    public GameObject canvasWorld;
+    public GameObject canvasCamera;
 
     //method 
 
