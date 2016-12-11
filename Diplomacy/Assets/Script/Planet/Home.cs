@@ -196,6 +196,7 @@ public class Home : Planet {
             this.addShipAnchor(shipCreate);
             //define shipCamp
             shipCreate.origin = this;
+            shipCreate.SetLocation(this);
             if (inOGU)
                 shipCreate.GoToOGU();
             else

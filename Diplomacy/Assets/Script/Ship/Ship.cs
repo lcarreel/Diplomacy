@@ -14,6 +14,15 @@ public class Ship : MonoBehaviour {
     private Animator _animator;
     private Planet location;
 
+    private AudioSource _audioSource;
+    public AudioClip selectIdle;
+    public AudioClip selectMining;
+
+    private void Awake()
+    {
+        _audioSource = GetComponent<AudioSource>();
+    }
+
     private void Start()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
@@ -56,6 +65,10 @@ public class Ship : MonoBehaviour {
             _rigidbody2D.isKinematic = true;
             _animator.SetBool("HighLight", true);
             GameMaster.Instance.cursorCreator.Create(this.gameObject);
+            if (location.GetComponent<Home>())
+                _audioSource.PlayOneShot(selectIdle);
+            else if (location.GetComponent<Resources>())
+                _audioSource.PlayOneShot(selectMining);
         }
     }
     private void OnMouseDrag()
@@ -198,5 +211,6 @@ public class Ship : MonoBehaviour {
         GameMaster.Instance.AddCasualties(1);
         Destroy(this.gameObject);
     }
+
 
 }
