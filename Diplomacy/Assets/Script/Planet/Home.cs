@@ -100,12 +100,12 @@ public class Home : Planet {
         if (mood < 40 && inOGU)
         {
             quitOGU();
-            _audioSource.PlayOneShot(unhappy);
+            _audioSource.PlayOneShot(unhappy, 0.1f);
         }
         if(mood > 60 && !inOGU)
         {
             joinOGU();
-            _audioSource.PlayOneShot(newOGU);
+            _audioSource.PlayOneShot(newOGU, 0.1f);
         }
 
         UpdateValueAndVisual();
@@ -152,7 +152,7 @@ public class Home : Planet {
             destroyAShipAnchor();
         } else if(GetCivil() > 0)
         {
-            _audioSource.PlayOneShot(killCivil);
+            _audioSource.PlayOneShot(killCivil, 0.1f);
             destroyCivil(1);
         } else
         {
@@ -209,11 +209,11 @@ public class Home : Planet {
         }
         if (GetCivil() == 0 && state == 1)
         {
-            _audioSource.PlayOneShot(destroyHome);
+            _audioSource.PlayOneShot(destroyHome, 0.1f);
             state = 0;
         }
         if (GetCivil() > 0 && state == 0)
-            _audioSource.PlayOneShot(healHome);
+            _audioSource.PlayOneShot(healHome, 0.1f);
     }
     public void CreateShip()
     {
@@ -229,7 +229,7 @@ public class Home : Planet {
             if (inOGU)
             {
                 shipCreate.GoToOGU();
-                _audioSource.PlayOneShot(spawnAmoi);
+                _audioSource.PlayOneShot(spawnAmoi, 0.1f);
             }
             else
             {

@@ -22,6 +22,8 @@ public class GameMaster : MonoBehaviour {
     public List<Home> allHomePlanets = new List<Home>();
     public List<Resources> allResourcesPlanets = new List<Resources>();
 
+    private AudioSource _audioSource;
+
     void Awake()
     {
         if (Instance == null)
@@ -78,7 +80,8 @@ public class GameMaster : MonoBehaviour {
                 StaticValue.tempo = 0.1f;
                 break;
         }
-
+        _audioSource = GetComponent<AudioSource>();
+        _audioSource.Play();
     }
     private void TryRandomTillSuccess(Planet planet, List<UtilType.PlanetID> nameUsed)
     {
