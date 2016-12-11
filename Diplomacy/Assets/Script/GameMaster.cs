@@ -194,11 +194,13 @@ public class GameMaster : MonoBehaviour {
     {
         planetInPeace++;
         UpdateProgressWindow(planetInPeace);
+        VerificationOfGameProgress();
     }
     public void RemovePlanetInPeace()
     {
         planetInPeace--;
         UpdateProgressWindow(planetInPeace);
+        VerificationOfGameProgress();
     }
 
     public void AddCasualties(int dead)
