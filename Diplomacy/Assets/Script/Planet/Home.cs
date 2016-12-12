@@ -277,7 +277,7 @@ public class Home : Planet {
         switch (GameMaster.Instance.difficulty)
         {
             case UtilType.Difficulty.Easy:
-
+                deathValue = 0;
                 break;
             case UtilType.Difficulty.Normal:
 
@@ -293,7 +293,7 @@ public class Home : Planet {
         {
             SetCivil(GetCivil() - deathValue );
             if (GetCivil() != 0)
-                GameMaster.Instance.AddCasualties(1);
+                GameMaster.Instance.AddCasualties(deathValue);
         }
     }
     public void CreateShip()
