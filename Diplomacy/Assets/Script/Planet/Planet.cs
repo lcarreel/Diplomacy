@@ -7,7 +7,7 @@ public abstract class Planet : MonoBehaviour {
     public UtilType.PlanetID nameInGame;
 
     [SerializeField]
-    public bool inOGU;/*{ get; private set; }*/
+    public bool inOGU = false;/*{ get; private set; }*/
 
     public List<Ship> _shipAnchorToThisPlanet = new List<Ship>();
 

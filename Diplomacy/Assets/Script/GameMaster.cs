@@ -47,6 +47,17 @@ public class GameMaster : MonoBehaviour {
                 allResourcesPlanets.Add(planet.GetComponent<Resources>());
         }
 
+        int badMoodInt = Random.Range(0, allHomePlanets.Count);
+        allHomePlanets[(int)badMoodInt].badMood = true;
+        allHomePlanets[Mathf.Abs(allHomePlanets.Count-(int)badMoodInt)].goodMood = true;
+
+        badMoodInt = Random.Range(0, allHomePlanets.Count);
+        if(!allHomePlanets[(int)badMoodInt].goodMood)
+            allHomePlanets[(int)badMoodInt].badMood = true;
+
+        if (!allHomePlanets[Mathf.Abs(allHomePlanets.Count - (int)badMoodInt)].badMood)
+            allHomePlanets[Mathf.Abs(allHomePlanets.Count - (int)badMoodInt)].goodMood = true;
+
 
         switch (difficulty)
         {

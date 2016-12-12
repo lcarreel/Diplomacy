@@ -10,6 +10,9 @@ public class Home : Planet {
     public int mood = 50;
     private int state = 1;
 
+    public bool badMood = false;
+    public bool goodMood = false;
+
     private float food = 0;
     private float foodNeeded;
     private float powr = 0;
@@ -42,6 +45,7 @@ public class Home : Planet {
     public void Start()
     {
         this.name = "PlanetHome " + this.nameInGame;
+        this.inOGU = false;
 
         homeUI = Instantiate(GameMaster.Instance.homeUI).GetComponent<HomeUI>();
         homeUI.transform.SetParent(GameMaster.Instance.canvasWorld.transform);
@@ -61,11 +65,17 @@ public class Home : Planet {
         iron = (int)UnityEngine.Random.Range(100, 280);
         powr = (int)UnityEngine.Random.Range(100, 280);
 
-        SetMood((int)UnityEngine.Random.Range(25, 100));
+        if(goodMood)
+            SetMood((int)UnityEngine.Random.Range(65, 100));
+        else if (badMood)
+            SetMood((int)UnityEngine.Random.Range(0, 35));
+        else
+            SetMood((int)UnityEngine.Random.Range(20, 90));
+        print("Depart mood = " + mood + " for " + this.name);
         if(mood > 60)
         {
             joinOGU();
-        }
+        } 
 
         UpdateValueAndVisual();
     }

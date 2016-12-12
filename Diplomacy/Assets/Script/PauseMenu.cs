@@ -25,22 +25,23 @@ public class PauseMenu : MonoBehaviour {
 
     public void RestartGame()
     {
+        Time.timeScale = 1;
         SceneManager.LoadScene("Space01");
     }
 
     public void EndGameDisplay(float score)
     {
-        pauseTitle.enabled = false;
-        resume.enabled = false;
+        pauseTitle.gameObject.SetActive(false);
+        resume.gameObject.SetActive(false);
 
-        endGameTitle.enabled = true;
-        scoreText.enabled = true;
+        endGameTitle.gameObject.SetActive(true);
+        scoreText.gameObject.SetActive(true);
 
     }
 
     public void bestScoreActive()
     {
-        bestScoreText.enabled = true;
+        bestScoreText.gameObject.SetActive(true);
     }
 
 
