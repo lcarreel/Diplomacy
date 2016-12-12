@@ -6,6 +6,14 @@ using System;
 
 public class Home : Planet {
 
+
+
+
+
+
+
+
+
     private int civil = 50;
     public int mood = 50;
     private int state = 1;
@@ -19,6 +27,8 @@ public class Home : Planet {
     private float powrNeeded;
     private float iron = 0;
     private float ironNeeded;
+
+    private float changeValueNormal = 3;
 
     [SerializeField]
     private SpriteRenderer haloOut;
@@ -57,9 +67,7 @@ public class Home : Planet {
         InvokeRepeating( "AddCivilPeriodically", StaticValue.tempo, StaticValue.tempo);
         InvokeRepeating( "CreateShip", UnityEngine.Random.Range(0, StaticValue.tempo * shipCreationRange), StaticValue.tempo * shipCreationRange);
 
-        foodNeeded = civil+1;
-        powrNeeded = civil+1;
-        ironNeeded = civil+1;
+        CalculNeededValue();
 
         food = (int)UnityEngine.Random.Range(100, 280);
         iron = (int)UnityEngine.Random.Range(100, 280);
@@ -79,6 +87,33 @@ public class Home : Planet {
 
         UpdateValueAndVisual();
     }
+    private void CalculNeededValue()
+    {
+        switch (GameMaster.Instance.difficulty)
+        {
+            case UtilType.Difficulty.Easy:
+                foodNeeded = 200;
+                powrNeeded = 200;
+                ironNeeded = 200;
+                break;
+            case UtilType.Difficulty.Normal:
+                foodNeeded = civil + changeValueNormal;
+                powrNeeded = civil + changeValueNormal;
+                ironNeeded = civil + changeValueNormal;
+                changeValueNormal = 0;
+                break;
+            case UtilType.Difficulty.Hard:
+                foodNeeded = civil + 1;
+                powrNeeded = civil + 1;
+                ironNeeded = civil + 1;
+                break;
+            case UtilType.Difficulty.Hell:
+                foodNeeded = civil + 1;
+                powrNeeded = civil + 1;
+                ironNeeded = civil + 1;
+                break;
+        }
+    }
 
     private void UpdateValueAndVisual()
     {
@@ -97,9 +132,7 @@ public class Home : Planet {
         if (civil < 0)
             civil = 0;
         UpdateCivilText();
-        foodNeeded = civil+1;
-        powrNeeded = civil+1;
-        ironNeeded = civil+1;
+        CalculNeededValue();
         UpdateValueAndVisual();
     }
 
@@ -186,7 +219,22 @@ public class Home : Planet {
     public void AddCivilPeriodically()
     {
         if (Time.timeScale != 0)
+        {
             AddCivilNow();
+
+            if(GameMaster.Instance.difficulty == UtilType.Difficulty.Normal)
+            {
+                if (powr < powrNeeded)
+                    changeValueNormal -= 3;
+                if (iron < ironNeeded)
+                    changeValueNormal -= 3;
+                if (food < foodNeeded)
+                    changeValueNormal -= 3;
+
+                if (changeValueNormal == 0)
+                    changeValueNormal = 6;
+            }
+        }
     }
     private void AddCivilNow()
     {
@@ -210,12 +258,7 @@ public class Home : Planet {
         else
         {
             SetMood(mood - 1);
-            if (iron < ironNeeded && food < foodNeeded && powr < powrNeeded)
-            {
-                SetCivil(GetCivil() - 1);
-                if (GetCivil() != 0)
-                    GameMaster.Instance.AddCasualties(1);
-            }
+            CivilStarvation();
         }
         if (GetCivil() == 0 && state == 1)
         {
@@ -224,6 +267,31 @@ public class Home : Planet {
         }
         if (GetCivil() > 0 && state == 0)
             _audioSource.PlayOneShot(healHome, 0.1f);
+    }
+    public void CivilStarvation()
+    {
+        int deathValue = 1;
+        switch (GameMaster.Instance.difficulty)
+        {
+            case UtilType.Difficulty.Easy:
+
+                break;
+            case UtilType.Difficulty.Normal:
+
+                break;
+            case UtilType.Difficulty.Hard:
+                deathValue = 2;
+                break;
+            case UtilType.Difficulty.Hell:
+                deathValue = 2;
+                break;
+        }
+        if (iron < ironNeeded && food < foodNeeded && powr < powrNeeded)
+        {
+            SetCivil(GetCivil() - deathValue );
+            if (GetCivil() != 0)
+                GameMaster.Instance.AddCasualties(1);
+        }
     }
     public void CreateShip()
     {

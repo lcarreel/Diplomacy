@@ -82,9 +82,35 @@ public class Resources : Planet {
             else if (resource == UtilType.Supply.Powr)
                 powr += StaticValue.production;
         }
+        int foodResources = 0;
+        int ironResources = 0;
+        int powrResources = 0;
+        switch (GameMaster.Instance.difficulty)
+        {
+            case UtilType.Difficulty.Easy:
+                foodResources = (int) (food - 1.5f * flux_nbr);
+                ironResources = (int) (iron - 1.5f * flux_nbr);
+                powrResources = (int) (powr - 1.5f * flux_nbr);
+                break;
+            case UtilType.Difficulty.Normal:
+                foodResources = food - 2 * flux_nbr;
+                ironResources = iron - 2 * flux_nbr;
+                powrResources = powr - 2 * flux_nbr;
+                break;
+            case UtilType.Difficulty.Hard:
+                foodResources = food / flux_nbr;
+                ironResources = iron / flux_nbr;
+                powrResources = powr / flux_nbr;
+                break;
+            case UtilType.Difficulty.Hell:
+                foodResources = food / flux_nbr;
+                ironResources = iron / flux_nbr;
+                powrResources = powr / flux_nbr;
+                break;
+        }
         foreach(Flux flux in _flux)
         {
-            flux.SetResourses(food / flux_nbr , iron / flux_nbr , powr / flux_nbr);
+            flux.SetResourses(foodResources, ironResources, powrResources);
         }
     }
 

@@ -81,7 +81,11 @@ public class CameraControl : MonoBehaviour {
         this.transform.position = corrigedPosition;
     }
 
-
+    public void UnenableAnimator()
+    {
+        print("Znimator");
+        GetComponent<Animator>().enabled = false;
+    }
 
 
 

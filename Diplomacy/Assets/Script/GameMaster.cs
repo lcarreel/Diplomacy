@@ -49,13 +49,16 @@ public class GameMaster : MonoBehaviour {
 
         int badMoodInt = Random.Range(0, allHomePlanets.Count);
         allHomePlanets[(int)badMoodInt].badMood = true;
-        allHomePlanets[Mathf.Abs(allHomePlanets.Count-(int)badMoodInt)].goodMood = true;
+        int invers = Mathf.Abs(allHomePlanets.Count - (int)badMoodInt);
+        if (invers < allHomePlanets.Count) 
+            allHomePlanets[invers].goodMood = true;
 
         badMoodInt = Random.Range(0, allHomePlanets.Count);
         if(!allHomePlanets[(int)badMoodInt].goodMood)
             allHomePlanets[(int)badMoodInt].badMood = true;
-
-        if (!allHomePlanets[Mathf.Abs(allHomePlanets.Count - (int)badMoodInt)].badMood)
+        invers = Mathf.Abs(allHomePlanets.Count - (int)badMoodInt);
+        if (invers < allHomePlanets.Count)
+            if (!allHomePlanets[Mathf.Abs(allHomePlanets.Count - (int)badMoodInt)].badMood)
             allHomePlanets[Mathf.Abs(allHomePlanets.Count - (int)badMoodInt)].goodMood = true;
 
 

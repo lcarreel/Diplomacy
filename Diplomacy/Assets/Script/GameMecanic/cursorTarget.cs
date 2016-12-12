@@ -125,15 +125,16 @@ public class cursorTarget : MonoBehaviour {
     public void calculateTarget()
     {
         GameObject res = null;
-        //ship
-        if (shipUnderCursor.Count != 0)
-        {
-            res = shipUnderCursor[0].gameObject;
-        }
+        
         //planet
-        else if (planetUnderCursor.Count != 0)
+        if (planetUnderCursor.Count != 0)
         {
             res = planetUnderCursor[0].gameObject;
+        }
+        //ship
+        else if (shipUnderCursor.Count != 0)
+        {
+            res = shipUnderCursor[0].gameObject;
         }
         //flux
         else if (fluxUnderCursor.Count != 0)
