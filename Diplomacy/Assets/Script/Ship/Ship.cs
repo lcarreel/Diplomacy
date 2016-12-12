@@ -104,7 +104,7 @@ public class Ship : MonoBehaviour {
                 Ship shipAttacked = target.GetComponent<Ship>();
                 if (shipAttacked != null)
                 {
-                    if (shipAttacked.origin != null && shipAttacked.origin != this.origin)
+                    if (shipAttacked.GetComponentInParent<Planet>() != null && shipAttacked.GetComponentInParent<Planet>() != this.origin)
                     {
                         target = shipAttacked.origin.gameObject;
                     }
@@ -262,7 +262,10 @@ public class Ship : MonoBehaviour {
     public void ChangeKinematicState(bool value)
     {
         if (_rigidbody2D == null)
+        {
+            if(this != null)
             _rigidbody2D = GetComponent<Rigidbody2D>();
+        }
         _rigidbody2D.isKinematic = value;
     }
 
