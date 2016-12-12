@@ -24,55 +24,73 @@ public class HomeUI : MonoBehaviour {
     [SerializeField]
     private Image backgroundFoodSlider;
 
+    private Animator _animMood;
+    private Animator _animPowr;
+    private Animator _animIron;
+    private Animator _animFood;
+
+
 
 
     public void ChangeValue(Vector3 supply, int mood, Vector3 supplyNeeded)
     {
+        if (_animMood == null)
+        {
+            _animMood = moodSlider.GetComponent<Animator>();
+            _animPowr = powrSlider.GetComponent<Animator>();
+            _animIron = ironSlider.GetComponent<Animator>();
+            _animFood = foodSlider.GetComponent<Animator>();
+}
         foodSlider.maxValue = 2 * supplyNeeded.x;
         foodSlider.value = supply.x;
         if (supply.x < supplyNeeded.x)
         {
-            backgroundFoodSlider.color = Color.red;
+            _animFood.SetBool("Danger",true);
         }
         else
         {
-            backgroundFoodSlider.color = Color.white;
+            _animFood.SetBool("Danger", false);
         }
         
         ironSlider.maxValue = 2 * supplyNeeded.y;
         ironSlider.value = supply.y;
         if (supply.y < supplyNeeded.y)
         {
-            backgroundIronSlider.color = Color.red;
+            _animIron.SetBool("Danger", true);
         }
         else
         {
-            backgroundIronSlider.color = Color.white;
+            _animIron.SetBool("Danger", false);
         }
         
         powrSlider.maxValue = 2 * supplyNeeded.z;
         powrSlider.value = supply.z;
         if (supply.z < supplyNeeded.z)
         {
-            backgroundPowrSlider.color = Color.red;
+            _animPowr.SetBool("Danger", true);
+
         }
         else
         {
-            backgroundPowrSlider.color = Color.white;
+            _animPowr.SetBool("Danger", false);
         }
-        
+
         moodSlider.maxValue = 100;
         moodSlider.value = (float)mood;
         if (mood < 40 )
         {
-            backgroundMoodSlider.color = Color.red;
+            backgroundMoodSlider.color = Color.white;
+            _animMood.SetBool("Danger", true);
         }
         else if(mood > 60)
         {
             backgroundMoodSlider.color = Color.white;
-        } else
+            _animMood.SetBool("Danger", false);
+        }
+        else
         {
-            backgroundMoodSlider.color = Color.yellow+Color.red;
+            //   backgroundMoodSlider.color = Color.yellow+Color.red;
+            _animMood.SetBool("Danger", true);
         }
     }
 

@@ -83,7 +83,6 @@ public class CameraControl : MonoBehaviour {
 
     public void UnenableAnimator()
     {
-        print("Znimator");
         GetComponent<Animator>().enabled = false;
     }
 

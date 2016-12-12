@@ -65,7 +65,8 @@ public class Ship : MonoBehaviour {
             inOGU = false;
             if (_spriteRenderer == null)
             {
-                _spriteRenderer = GetComponent<SpriteRenderer>();
+                if(this!=null)
+                    _spriteRenderer = this.GetComponent<SpriteRenderer>();
             }
             _spriteRenderer.color = Color.red;
         } 
@@ -100,6 +101,14 @@ public class Ship : MonoBehaviour {
             target = GameMaster.Instance.cursorCreator.ReturnTargetAndDisappear();
             if (target != null)
             {
+                Ship shipAttacked = target.GetComponent<Ship>();
+                if (shipAttacked != null)
+                {
+                    if (shipAttacked.origin != null && shipAttacked.origin != this.origin)
+                    {
+                        target = shipAttacked.origin.gameObject;
+                    }
+                }
                 StartCoroutine(GoToTargetPoint(speed));
 
             }
@@ -240,6 +249,7 @@ public class Ship : MonoBehaviour {
     {
         if (homeAttacked.Attacked(this))
         {
+            origin.AddRessources(Vector3.one * 12);
             DestroyShip();
         } else
         {
