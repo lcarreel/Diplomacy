@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System;
@@ -149,16 +149,12 @@ public class Resources : Planet {
     public void emptyFlux()
     {
         print("Emptied + "+this.name);
-        List<Flux> _tmp = new List<Flux>();
-        foreach (Flux flux in _flux)
-        {
-            _tmp.Add(flux);
-        }
-        _flux.Clear();
-        foreach (Flux flux in _tmp)
-        {
-            Destroy(flux);
-        }
+		foreach (Flux flux in _flux) 
+		{
+			flux.removeFlux();
+		}
+		_flux.Clear();
+		UpdateFluxValues();
     }
 
 

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
@@ -122,7 +122,10 @@ public class GameMaster : MonoBehaviour {
     public cursorCreator cursorCreator;
 
     public GameObject ship;
-    public GameObject fluxParticles;
+    public GameObject fluxParticleFood;
+	public GameObject fluxParticleIron;
+	public GameObject fluxParticlePowr;
+
     public GameObject homeUI;
     public GameObject resourcesUI;
     public GameObject radar;
