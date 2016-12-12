@@ -83,7 +83,10 @@ public class Home : Planet {
         if(mood > 60)
         {
             joinOGU();
-        } 
+        } else
+        {
+            quitOGU();
+        }
 
         UpdateValueAndVisual();
     }
@@ -149,7 +152,7 @@ public class Home : Planet {
         {
             joinOGU();
             _audioSource.PlayOneShot(newOGU, 0.1f);
-        }
+        } 
 
         UpdateValueAndVisual();
     }
@@ -169,7 +172,7 @@ public class Home : Planet {
             //kill
             //ship.DestroyShip();
         }
-
+        print("quitOGU");
         AttackAroundHim();
 
         GameMaster.Instance.RemovePlanetInPeace();
@@ -371,7 +374,7 @@ public class Home : Planet {
         if(!inOGU && supplyWanted.magnitude > 0)
         {
             StartCoroutine(seekForPlanetToInvade());
-        }
+        } 
     }
     private IEnumerator seekForPlanetToInvade()
     {
