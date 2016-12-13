@@ -31,6 +31,8 @@ public class PauseMenu : MonoBehaviour {
 
     public void EndGameDisplay(float score)
     {
+
+        scoreText.text = score + " people get killed before it";
         pauseTitle.gameObject.SetActive(false);
         resume.gameObject.SetActive(false);
 

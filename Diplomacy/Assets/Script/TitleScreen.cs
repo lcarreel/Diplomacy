@@ -13,6 +13,14 @@ public class TitleScreen : MonoBehaviour {
     private UtilType.Difficulty diff = UtilType.Difficulty.Easy;
     private UtilType.Speed spd = UtilType.Speed.FirstStep;
 
+
+    private void Awake()
+    {
+        diff = UtilType.Difficulty.Easy;
+        PlayerPrefs.SetInt("DIFFICULTY", 0);
+        spd = UtilType.Speed.CruisingSpeed;
+        PlayerPrefs.SetInt("SPEED", 0);
+    }
     Animator _animator;
 	// Update is called once per frame
 	public void OnClick () {

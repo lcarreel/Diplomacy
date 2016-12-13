@@ -78,7 +78,7 @@ public abstract class Planet : MonoBehaviour {
 
     public void GoOrbit(Ship ship)
     {
-        if(_shipAnchorToThisPlanet.Count >=6)
+        if(_shipAnchorToThisPlanet.Count >= 5)
         {
             ship.DestroyShip();
         } else

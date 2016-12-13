@@ -114,11 +114,14 @@ public class Ship : MonoBehaviour {
                 StartCoroutine(GoToTargetPoint(speed));
 
             }
+           
             _rigidbody2D.isKinematic = false;
             _animator.SetBool("HighLight", false);
-            if (target.GetComponent<Resources>() && target.GetComponent<Resources>().GetFlux().Count == 0)
+            if (target.GetComponent<Resources>() )
+                if(target.GetComponent<Resources>().GetFlux().Count == 0)
                 _audioSource.PlayOneShot(sendToMine, 0.1f);
-            else if (target.GetComponent<Planet>() && !target.GetComponent<Planet>().inOGU)
+            else if (target.GetComponent<Planet>())
+                    if (!target.GetComponent<Planet>().inOGU)
                 _audioSource.PlayOneShot(sendToWar, 0.1f);
         }
 

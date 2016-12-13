@@ -298,7 +298,7 @@ public class Home : Planet {
     }
     public void CreateShip()
     {
-        if (Time.deltaTime != 0 && _shipAnchorToThisPlanet.Count <=6)
+        if (Time.deltaTime != 0 && _shipAnchorToThisPlanet.Count <= 5)
         {
             Ship shipCreate = Instantiate(GameMaster.Instance.ship).GetComponent<Ship>();
             shipCreate.transform.position = this.transform.position + ((Vector3)Vector2.right);
