@@ -42,9 +42,12 @@ public abstract class Planet : MonoBehaviour {
     
     public void destroyAShipAnchor()
     {
+
         if (_shipAnchorToThisPlanet.Count != 0)
         {
-            _audioSource.PlayOneShot(destroyShipSound, 0.1f);
+
+            if(_audioSource != null)
+                _audioSource.PlayOneShot(destroyShipSound, 0.1f);
             Ship shipWhoSacrificeFOrOther = _shipAnchorToThisPlanet[0];
             _shipAnchorToThisPlanet.Remove(shipWhoSacrificeFOrOther);
             shipWhoSacrificeFOrOther.DestroyShip();
@@ -75,11 +78,17 @@ public abstract class Planet : MonoBehaviour {
 
     public void GoOrbit(Ship ship)
     {
-        addShipAnchor(ship);
-        ship.transform.SetParent(orbit.transform);
-        Quaternion q = ship.transform.localRotation;
-        q.eulerAngles += eulerAnglesRotationOfShipInOrbit;
-        ship.transform.localRotation = q;
+        if(_shipAnchorToThisPlanet.Count >=6)
+        {
+            ship.DestroyShip();
+        } else
+        {
+            addShipAnchor(ship);
+            ship.transform.SetParent(orbit.transform);
+            Quaternion q = ship.transform.localRotation;
+            q.eulerAngles += eulerAnglesRotationOfShipInOrbit;
+            ship.transform.localRotation = q;
+        }
     }
 
 
@@ -121,7 +130,7 @@ public abstract class Planet : MonoBehaviour {
                 {
 
                 }
-                print("target ok");
+                //print("target ok");
             }
             if (_animator == null)
                 _animator = GetComponent<Animator>();

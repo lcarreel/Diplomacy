@@ -126,7 +126,7 @@ public class Resources : Planet {
     {
         foreach(Flux flux in _flux)
         {
-            if (flux.GetHomePlanet() == planet)
+            if (flux.GetHomePlanet().gameObject == planet.gameObject)
                 return true;
         }
         return false;
@@ -161,8 +161,8 @@ public class Resources : Planet {
 
     public void emptyFlux()
     {
-        print("Emptied + "+this.name);
-		foreach (Flux flux in _flux) 
+        //print("Emptied + "+this.name);
+        foreach (Flux flux in _flux) 
 		{
 			flux.removeFlux();
 		}

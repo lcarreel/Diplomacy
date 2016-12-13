@@ -79,8 +79,8 @@ public class Home : Planet {
             SetMood((int)UnityEngine.Random.Range(0, 35));
         else
             SetMood((int)UnityEngine.Random.Range(20, 90));
-        print("Depart mood = " + mood + " for " + this.name);
-        if(mood > 60)
+        //print("Depart mood = " + mood + " for " + this.name);
+        if (mood > 60)
         {
             joinOGU();
         } else
@@ -172,7 +172,7 @@ public class Home : Planet {
             //kill
             //ship.DestroyShip();
         }
-        print("quitOGU");
+        //print("quitOGU");
         AttackAroundHim();
 
         GameMaster.Instance.RemovePlanetInPeace();
@@ -298,7 +298,7 @@ public class Home : Planet {
     }
     public void CreateShip()
     {
-        if (Time.deltaTime != 0)
+        if (Time.deltaTime != 0 && _shipAnchorToThisPlanet.Count <=6)
         {
             Ship shipCreate = Instantiate(GameMaster.Instance.ship).GetComponent<Ship>();
             shipCreate.transform.position = this.transform.position + ((Vector3)Vector2.right);
@@ -438,6 +438,7 @@ public class Home : Planet {
                     {
                         if (planetResources.FluxThisPlanet(this))
                         {
+                            print(" AM I MADE THIS !!! IT'S WORK !!");
                             planetUseless++;
                             risqueLvl.Add(2047);
                         } else

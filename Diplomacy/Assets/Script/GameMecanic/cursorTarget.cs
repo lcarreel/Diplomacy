@@ -50,11 +50,11 @@ public class cursorTarget : MonoBehaviour {
 
     private void CollisionEnterManagement(Collision2D collision)
     {
-        print("Something under");
+        //print("Something under");
         Planet planetOver = collision.gameObject.GetComponent<Planet>();
         if (planetOver != null)
         {
-            print("Planet Under");
+            //print("Planet Under");
             if (!planetUnderCursor.Contains(planetOver))
                 planetUnderCursor.Add(planetOver);
         }
@@ -62,7 +62,7 @@ public class cursorTarget : MonoBehaviour {
         Flux fluxOver = collision.gameObject.GetComponent<Flux>();
         if (fluxOver != null)
         {
-            print("Flux Under");
+            //print("Flux Under");
             if (!fluxUnderCursor.Contains(fluxOver))
                 fluxUnderCursor.Add(fluxOver);
         }
@@ -70,7 +70,7 @@ public class cursorTarget : MonoBehaviour {
         Ship shipOver = collision.gameObject.GetComponent<Ship>();
         if (shipOver != null)
         {
-            print("Ship Under");
+            //print("Ship Under");
             if (!shipUnderCursor.Contains(shipOver))
             {
                 shipUnderCursor.Add(shipOver);

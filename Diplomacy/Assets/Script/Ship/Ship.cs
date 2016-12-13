@@ -241,7 +241,7 @@ public class Ship : MonoBehaviour {
     }
     private void TakePlanetOver(Resources resources)
     {
-        print("I'm here to take it");
+        //print("I'm here to take it");
         resources.quitOGU();
         resources.emptyFlux();
         resources.SetFlux(origin, gameObject.AddComponent<Flux>());
