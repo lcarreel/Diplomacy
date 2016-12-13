@@ -18,7 +18,7 @@ public class TitleScreen : MonoBehaviour {
     {
         diff = UtilType.Difficulty.Easy;
         PlayerPrefs.SetInt("DIFFICULTY", 0);
-        spd = UtilType.Speed.CruisingSpeed;
+        spd = UtilType.Speed.FirstStep;
         PlayerPrefs.SetInt("SPEED", 0);
     }
     Animator _animator;

@@ -141,7 +141,7 @@ public class Home : Planet {
 
     public void SetMood(int value)
     {
-        print("SetMood " + this.name);
+        //print("SetMood " + this.name);
         mood = Mathf.Min(value,100);
         mood = Mathf.Max(value, 0);
         if (mood < 40 && inOGU)
@@ -373,7 +373,7 @@ public class Home : Planet {
 
     private void AttackAroundHim()
     {
-        print("Before waitUntil in seekForPlanet for " + this.name);
+        print("Attack around him " + this.name);
         //First IA Method
         UpdateSupplyWanted();
         if(!inOGU && supplyWanted.magnitude > 0)
@@ -493,27 +493,30 @@ public class Home : Planet {
 
     private void LaunchShipTo(List<Planet> planetToInvade)
     {
-        foreach (Planet planet in planetToInvade)
+        for (int i = 0; i < planetToInvade.Count; i++)
         {
-            print("Foreach planet : " + this.name);
-            LaunchIndividualShipTo(planet);
-            //envoie getNumberOfShipOnIt + 1
+            if (this.getNumberOfShipOnIt() > 0)
+            {
+                print("Foreach planet : " + this.name);
+                for(int j = 0; j < 1; j++) // i < planetToInvade[i]
+                    LaunchIndividualShipTo(planetToInvade[i]);
+            }
+            else
+            {
+                i = planetToInvade.Count;
+                print("Remis a plus tard : " + this.name);
+                Invoke("AttackAroundHim", 5 * StaticValue.tempo);
+            }
         }
+
     }
 
     private void LaunchIndividualShipTo(Planet planet)
     {
-        if (this.getNumberOfShipOnIt() > 0)
-        {
             _shipAnchorToThisPlanet[0].GoToPlanetByIA(planet);
             _shipAnchorToThisPlanet.Remove(_shipAnchorToThisPlanet[0]);
-        } else
-        {
-            print("Launch Individual " + this.name);
-            Invoke("AttackAroundHim",5*StaticValue.tempo);
-        }
+        
     }
-
 
 
     private void UpdateSupplyWanted()

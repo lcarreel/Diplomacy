@@ -155,7 +155,7 @@ public class Ship : MonoBehaviour {
             this.transform.position = Vector2.Lerp(this.transform.position, target.transform.position, distanceDone);
             distanceDone += speed * Time.deltaTime;
 //            print("speed * Time.deltaTime = "+ speed * Time.deltaTime +"   with : "+ distanceDone);
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.02f);
         }
         target = null;
     }
