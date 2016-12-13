@@ -141,10 +141,12 @@ public class Home : Planet {
 
     public void SetMood(int value)
     {
+        print("SetMood " + this.name);
         mood = Mathf.Min(value,100);
         mood = Mathf.Max(value, 0);
         if (mood < 40 && inOGU)
         {
+            print("SetMood and quit " + this.name);
             quitOGU();
             _audioSource.PlayOneShot(unhappy, 0.1f);
         }
@@ -173,6 +175,8 @@ public class Home : Planet {
             //ship.DestroyShip();
         }
         //print("quitOGU");
+
+        print("quit OGU : " + this.name);
         AttackAroundHim();
 
         GameMaster.Instance.RemovePlanetInPeace();
@@ -369,6 +373,7 @@ public class Home : Planet {
 
     private void AttackAroundHim()
     {
+        print("Before waitUntil in seekForPlanet for " + this.name);
         //First IA Method
         UpdateSupplyWanted();
         if(!inOGU && supplyWanted.magnitude > 0)
@@ -387,10 +392,12 @@ public class Home : Planet {
         radar.transform.position = this.transform.position;
         radar.origin = this;
         radar.keepSeeking = true;
+        print("Before waitUntil in seekForPlanet for " + this.name);
         yield return new WaitUntil(() => (radar.planetTouched.Count >= 5));
+        print("After waitUntil in seekForPlanet for for " + this.name);
         radar.keepSeeking = false;
 
-        TreatmentRadarDate(radar.planetTouched);
+        TreatmentRadarData(radar.planetTouched);
 
     }
 
@@ -402,11 +409,13 @@ public class Home : Planet {
         yield return new WaitUntil(() => (radar.planetTouched.Count >= 5));
         radar.keepSeeking = false;
 
-        TreatmentRadarDate(radar.planetTouched);
+        print("Before TreatmentRadarData for " + this.name);
+        TreatmentRadarData(radar.planetTouched);
     }
 
-    private void TreatmentRadarDate(List<Planet> planetData)
+    private void TreatmentRadarData(List<Planet> planetData)
     {
+        print("TreatmentRadarData for "+this.name);
         List<Planet> noRisk = new List<Planet>();
         List<float> risqueLvl = new List<float>();
         int planetUseless = planetData.Count;
@@ -486,6 +495,7 @@ public class Home : Planet {
     {
         foreach (Planet planet in planetToInvade)
         {
+            print("Foreach planet : " + this.name);
             LaunchIndividualShipTo(planet);
             //envoie getNumberOfShipOnIt + 1
         }
@@ -499,6 +509,7 @@ public class Home : Planet {
             _shipAnchorToThisPlanet.Remove(_shipAnchorToThisPlanet[0]);
         } else
         {
+            print("Launch Individual " + this.name);
             Invoke("AttackAroundHim",5*StaticValue.tempo);
         }
     }
