@@ -118,6 +118,15 @@ public class Resources : Planet {
     {
         return _flux;
     }
+    public bool FluxThisPlanet(Planet planet)
+    {
+        foreach(Flux flux in _flux)
+        {
+            if (flux.GetHomePlanet() == planet)
+                return true;
+        }
+        return false;
+    }
 
     public void SetFlux(Home planet, Flux flux)
     {

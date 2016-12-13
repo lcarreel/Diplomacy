@@ -63,12 +63,14 @@ public class Ship : MonoBehaviour {
         if (target == null)
         {
             inOGU = false;
-            if (_spriteRenderer == null)
+            if (this != null)
             {
-                if(this!=null)
+                if (_spriteRenderer == null)
+                {
                     _spriteRenderer = this.GetComponent<SpriteRenderer>();
+                }
+                _spriteRenderer.color = Color.red;
             }
-            _spriteRenderer.color = Color.red;
         } 
     }
 

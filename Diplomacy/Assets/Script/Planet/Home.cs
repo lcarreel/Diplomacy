@@ -374,7 +374,11 @@ public class Home : Planet {
         if(!inOGU && supplyWanted.magnitude > 0)
         {
             StartCoroutine(seekForPlanetToInvade());
-        } 
+        } else
+        {
+            //Seem to make everything laggy
+            //Invoke("AttackAroundHim",StaticValue.tempo*15);
+        }
     }
     private IEnumerator seekForPlanetToInvade()
     {
@@ -414,11 +418,11 @@ public class Home : Planet {
                 risqueLvl.Add(2047);
             }
             else if(planet.getFatherOfShipOnIt().gameObject == this.gameObject)
-                {
+             {
                     planetUseless++;
                     risqueLvl.Add(2047);
             }
-            else
+            else 
             {
                 float riskValue = (planet.transform.position - transform.position).magnitude;
                 riskValue *= (planet.getNumberOfShipOnIt() + 1);
@@ -429,8 +433,24 @@ public class Home : Planet {
                     risqueLvl.Add(2047);
                 } else
                 {
-                    riskValue /= supplyValue;
-                    risqueLvl.Add(riskValue);
+                    Resources planetResources = planet.GetComponent<Resources>();
+                    if (planetResources != null)
+                    {
+                        if (planetResources.FluxThisPlanet(this))
+                        {
+                            planetUseless++;
+                            risqueLvl.Add(2047);
+                        } else
+                        {
+                            riskValue /= supplyValue;
+                            risqueLvl.Add(riskValue);
+                        }
+                    } else
+                    {
+                        riskValue /= supplyValue;
+                        risqueLvl.Add(riskValue);
+                    }
+                    
                 }
             }
 
@@ -452,7 +472,7 @@ public class Home : Planet {
         int maxIndex = 0;
         for ( int i = 0; i < risqueLvl.Count; i++ )
         {
-            if(risqueLvl[i] > risqueLvl[maxIndex])
+            if(risqueLvl[i] < risqueLvl[maxIndex])
             {
                 maxIndex = i;
             }
