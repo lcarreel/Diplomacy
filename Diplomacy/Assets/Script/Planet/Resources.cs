@@ -85,27 +85,31 @@ public class Resources : Planet {
         int foodResources = 0;
         int ironResources = 0;
         int powrResources = 0;
+
+        int nbr_Flux_corrected = flux_nbr;
+        if (nbr_Flux_corrected == 0)
+            nbr_Flux_corrected = 1;
         switch (GameMaster.Instance.difficulty)
         {
             case UtilType.Difficulty.Easy:
-                foodResources = (int) (food - 1.5f * flux_nbr);
-                ironResources = (int) (iron - 1.5f * flux_nbr);
-                powrResources = (int) (powr - 1.5f * flux_nbr);
+                foodResources = (int) (food - 1.5f * nbr_Flux_corrected);
+                ironResources = (int) (iron - 1.5f * nbr_Flux_corrected);
+                powrResources = (int) (powr - 1.5f * nbr_Flux_corrected);
                 break;
             case UtilType.Difficulty.Normal:
-                foodResources = food - 2 * flux_nbr;
-                ironResources = iron - 2 * flux_nbr;
-                powrResources = powr - 2 * flux_nbr;
+                foodResources = food - 2 * nbr_Flux_corrected;
+                ironResources = iron - 2 * nbr_Flux_corrected;
+                powrResources = powr - 2 * nbr_Flux_corrected;
                 break;
             case UtilType.Difficulty.Hard:
-                foodResources = food / flux_nbr;
-                ironResources = iron / flux_nbr;
-                powrResources = powr / flux_nbr;
+                foodResources = food / nbr_Flux_corrected;
+                ironResources = iron / nbr_Flux_corrected;
+                powrResources = powr / nbr_Flux_corrected;
                 break;
             case UtilType.Difficulty.Hell:
-                foodResources = food / flux_nbr;
-                ironResources = iron / flux_nbr;
-                powrResources = powr / flux_nbr;
+                foodResources = food / nbr_Flux_corrected;
+                ironResources = iron / nbr_Flux_corrected;
+                powrResources = powr / nbr_Flux_corrected;
                 break;
         }
         foreach(Flux flux in _flux)

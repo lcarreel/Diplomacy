@@ -35,6 +35,44 @@ public class GameMaster : MonoBehaviour {
             Destroy(gameObject);
         }
 
+        //set start value
+        int diffNumber = PlayerPrefs.GetInt("DIFFICULTY");
+        int spdNumber = PlayerPrefs.GetInt("SPEED");
+
+        switch (diffNumber)
+        {
+            case 0:
+                difficulty = UtilType.Difficulty.Easy;
+                break;
+            case 1:
+                difficulty = UtilType.Difficulty.Normal;
+                break;
+            case 2:
+                difficulty = UtilType.Difficulty.Hard;
+                break;
+            case 3:
+                difficulty = UtilType.Difficulty.Hell;
+                break;
+        }
+
+        switch (spdNumber)
+        {
+            case 0:
+                speed = UtilType.Speed.FirstStep;
+                break;
+            case 1:
+                speed = UtilType.Speed.CruisingSpeed;
+                break;
+            case 2:
+                speed = UtilType.Speed.High;
+                break;
+            case 3:
+                speed = UtilType.Speed.LightSpeed;
+                break;
+        }
+
+        //end set start value
+
         allHomePlanets.Clear();
         allResourcesPlanets.Clear();
         List<UtilType.PlanetID> nameUsed = new List<UtilType.PlanetID>();
