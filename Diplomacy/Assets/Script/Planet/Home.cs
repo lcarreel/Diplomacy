@@ -52,10 +52,21 @@ public class Home : Planet {
 
     public List<Ship> wholeBadArmada = new List<Ship>();
 
+    [SerializeField]
+    private SpriteRenderer groundImage;
+    [SerializeField]
+    private SpriteRenderer cloudImage;
+
     public void Start()
     {
         this.name = "PlanetHome " + this.nameInGame;
         this.inOGU = false;
+
+        Vector3 rotation = Vector3.forward * UnityEngine.Random.Range(0, 360);
+        groundImage.sprite = GameMaster.Instance.GetRandomSpriteGround();
+        groundImage.transform.Rotate(rotation);
+        cloudImage.sprite = GameMaster.Instance.GetRandomSpriteCloud();
+        cloudImage.transform.Rotate(rotation);
 
         homeUI = Instantiate(GameMaster.Instance.homeUI).GetComponent<HomeUI>();
         homeUI.transform.SetParent(GameMaster.Instance.canvasWorld.transform);
@@ -146,7 +157,7 @@ public class Home : Planet {
         mood = Mathf.Max(value, 0);
         if (mood < 40 && inOGU)
         {
-            print("SetMood and quit " + this.name);
+//            print("SetMood and quit " + this.name);
             quitOGU();
             _audioSource.PlayOneShot(unhappy, 0.1f);
         }
@@ -176,7 +187,7 @@ public class Home : Planet {
         }
         //print("quitOGU");
 
-        print("quit OGU : " + this.name);
+//        print("quit OGU : " + this.name);
         AttackAroundHim();
 
         GameMaster.Instance.RemovePlanetInPeace();
@@ -382,7 +393,7 @@ public class Home : Planet {
         } else
         {
             //Seem to make everything laggy
-            //Invoke("AttackAroundHim",StaticValue.tempo*15);
+            Invoke("AttackAroundHim",StaticValue.tempo*35);
         }
     }
     private IEnumerator seekForPlanetToInvade()
@@ -409,13 +420,12 @@ public class Home : Planet {
         yield return new WaitUntil(() => (radar.planetTouched.Count >= 5));
         radar.keepSeeking = false;
 
-        print("Before TreatmentRadarData for " + this.name);
         TreatmentRadarData(radar.planetTouched);
     }
 
     private void TreatmentRadarData(List<Planet> planetData)
     {
-        print("TreatmentRadarData for "+this.name);
+   //     print("TreatmentRadarData for "+this.name);
         List<Planet> noRisk = new List<Planet>();
         List<float> risqueLvl = new List<float>();
         int planetUseless = planetData.Count;
@@ -497,14 +507,14 @@ public class Home : Planet {
         {
             if (this.getNumberOfShipOnIt() > 0)
             {
-                print("Foreach planet : " + this.name);
+//                print("Foreach planet : " + this.name);
                 for(int j = 0; j < 1; j++) // i < planetToInvade[i]
                     LaunchIndividualShipTo(planetToInvade[i]);
             }
             else
             {
                 i = planetToInvade.Count;
-                print("Remis a plus tard : " + this.name);
+//                print("Remis a plus tard : " + this.name);
                 Invoke("AttackAroundHim", 5 * StaticValue.tempo);
             }
         }

@@ -17,8 +17,20 @@ public class GameMaster : MonoBehaviour {
     [SerializeField]
     private List<Sprite> resourcesVisualIron = new List<Sprite>();
 
+    [SerializeField]
+    private List<Sprite> groundSprites = new List<Sprite>();
+    [SerializeField]
+    private List<Sprite> cloudSprites = new List<Sprite>();
+
     public List<Sprite> supplyIcon = new List<Sprite>();
-    
+
+    [SerializeField]
+    private GameObject homePlanet;
+    [SerializeField]
+    private GameObject resourcesPlanet;
+    public int minPlanetHome = 5;
+    public int maxPlanetHome = 7;
+
     public List<Home> allHomePlanets = new List<Home>();
     public List<Resources> allResourcesPlanets = new List<Resources>();
 
@@ -73,16 +85,49 @@ public class GameMaster : MonoBehaviour {
 
         //end set start value
 
+        int randomHome = (int) Random.Range(minPlanetHome, maxPlanetHome+0.9f);
+        int randomResources = Random.Range( (randomHome*2)-1, (randomHome*2)+1);
+ //       print("randomHome = " + randomHome + " et randomResources = " + randomResources);
+        List<PointSpawn> possibleSpawnPoint = new List<PointSpawn>();
+        foreach (PointSpawn pointSpawn in FindObjectsOfType<PointSpawn>())
+        {
+            possibleSpawnPoint.Add(pointSpawn);
+        }
+
         allHomePlanets.Clear();
         allResourcesPlanets.Clear();
         List<UtilType.PlanetID> nameUsed = new List<UtilType.PlanetID>();
-        foreach(Planet planet in FindObjectsOfType<Planet>())
+
+        for(int i = 0; i < randomHome; i++)
         {
-            TryRandomTillSuccess(planet, nameUsed);
-            if (planet.GetComponent<Home>())
-                allHomePlanets.Add(planet.GetComponent<Home>());
-            else
-                allResourcesPlanets.Add(planet.GetComponent<Resources>());
+            Home homeCreated = Instantiate(homePlanet).GetComponent<Home>();
+            int randomGet = TryRandomTillSuccess(homeCreated, nameUsed);
+            allHomePlanets.Add(homeCreated);
+            PointSpawn newPosition = possibleSpawnPoint[randomGet % possibleSpawnPoint.Count];
+//            print( (randomGet % possibleSpawnPoint.Count) + " = nombre sorti");
+            homeCreated.transform.position = newPosition.transform.position;
+
+            possibleSpawnPoint.Remove(newPosition);
+            foreach (PointSpawn pointSpawn in newPosition.neighbour)
+            {
+                possibleSpawnPoint.Remove(pointSpawn);
+            }
+        }
+
+        for (int i = 0; i < randomResources; i++)
+        {
+            Resources resourcesCreated = Instantiate(resourcesPlanet).GetComponent<Resources>();
+            int randomGet = TryRandomTillSuccess(resourcesCreated, nameUsed);
+            allResourcesPlanets.Add(resourcesCreated);
+            PointSpawn newPosition = possibleSpawnPoint[randomGet % possibleSpawnPoint.Count];
+ //           print((randomGet % possibleSpawnPoint.Count) + " = nombre sorti");
+            resourcesCreated.transform.position = newPosition.transform.position;
+
+            possibleSpawnPoint.Remove(newPosition);
+            foreach (PointSpawn pointSpawn in newPosition.neighbour)
+            {
+                possibleSpawnPoint.Remove(pointSpawn);
+            }
         }
 
         int badMoodInt = Random.Range(0, allHomePlanets.Count);
@@ -135,16 +180,19 @@ public class GameMaster : MonoBehaviour {
         _audioSource = GetComponent<AudioSource>();
         _audioSource.Play();
     }
-    private void TryRandomTillSuccess(Planet planet, List<UtilType.PlanetID> nameUsed)
+    private int TryRandomTillSuccess(Planet planet, List<UtilType.PlanetID> nameUsed)
     {
-        planet.nameInGame = (UtilType.PlanetID)Random.Range(0, StaticValue.numberOfPlanetName);
+//        print("randomNum = Random("+0 +", "+ StaticValue.numberOfPlanetName+")");
+        int randomNum = Random.Range(0, StaticValue.numberOfPlanetName);
+        planet.nameInGame = (UtilType.PlanetID)randomNum;
         if (nameUsed.Contains(planet.nameInGame))
         {
-            TryRandomTillSuccess(planet, nameUsed);
+            randomNum = TryRandomTillSuccess(planet, nameUsed);
         } else
         {
             nameUsed.Add(planet.nameInGame);
         }
+        return randomNum;
     }
 
     public bool gameEnd = false;
@@ -160,6 +208,8 @@ public class GameMaster : MonoBehaviour {
     public cursorCreator cursorCreator;
 
     public GameObject ship;
+    public Material trailGood;
+    public Material trailBad;
     public GameObject fluxParticleFood;
 	public GameObject fluxParticleIron;
 	public GameObject fluxParticlePowr;
@@ -187,6 +237,20 @@ public class GameMaster : MonoBehaviour {
         {
             Debug.Break();
         }
+    }
+
+
+    public Sprite GetRandomSpriteGround()
+    {
+        int random = (int)Random.Range(0, groundSprites.Count);
+        print(random +" Ho");
+        return groundSprites[random];
+    }
+    public Sprite GetRandomSpriteCloud()
+    {
+        int random = (int)Random.Range(0, cloudSprites.Count);
+        print(random + " Clou");
+        return cloudSprites[random];
     }
 
     public void InversePause()

@@ -9,7 +9,7 @@ public static class StaticValue {
     public static int production = 12;
     public static int consomation = 6;
 
-    public static int numberOfPlanetName = 20;
+    public static int numberOfPlanetName = 102;
 
     public static string maxScore = "MAXSCORE";
 }

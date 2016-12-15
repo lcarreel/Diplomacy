@@ -32,8 +32,18 @@ public class TitleScreen : MonoBehaviour {
 
     public void ChargeFollowingScene()
     {
-
-        SceneManager.LoadScene("Space01");
+        if( diff == UtilType.Difficulty.Easy )
+        {
+            SceneManager.LoadScene("Space00");
+        }
+        else if ( diff == UtilType.Difficulty.Normal )
+        {
+            SceneManager.LoadScene("Space01");
+        }
+        else
+        {
+            SceneManager.LoadScene("Space02");
+        }
     }
 
     public void Skip()

@@ -21,9 +21,12 @@ public class Ship : MonoBehaviour {
     public AudioClip sendToMine;
     public AudioClip destroyShip;
 
+    private TrailRenderer _trailRenderer;
+
     private void Awake()
     {
         _audioSource = GetComponent<AudioSource>();
+        _trailRenderer = GetComponentInChildren<TrailRenderer>();
     }
 
     private void Start()
@@ -54,6 +57,7 @@ public class Ship : MonoBehaviour {
             _spriteRenderer = GetComponent<SpriteRenderer>();
         }
         _spriteRenderer.color = Color.blue+Color.green;
+        _trailRenderer.material = GameMaster.Instance.trailGood;
 
         if (target != null)
             target = null;
@@ -70,6 +74,7 @@ public class Ship : MonoBehaviour {
                     _spriteRenderer = this.GetComponent<SpriteRenderer>();
                 }
                 _spriteRenderer.color = Color.red;
+                _trailRenderer.material = GameMaster.Instance.trailBad;
             }
         } 
     }
