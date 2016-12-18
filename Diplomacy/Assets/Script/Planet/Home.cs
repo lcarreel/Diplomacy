@@ -384,7 +384,7 @@ public class Home : Planet {
 
     private void AttackAroundHim()
     {
-        print("Attack around him " + this.name);
+     //   print("Attack around him " + this.name);
         //First IA Method
         UpdateSupplyWanted();
         if(!inCamp && supplyWanted.magnitude > 0)
@@ -403,9 +403,9 @@ public class Home : Planet {
         radar.transform.position = this.transform.position;
         radar.origin = this;
         radar.keepSeeking = true;
-        print("Before waitUntil in seekForPlanet for " + this.name);
+       // print("Before waitUntil in seekForPlanet for " + this.name);
         yield return new WaitUntil(() => (radar.planetTouched.Count >= 5));
-        print("After waitUntil in seekForPlanet for for " + this.name);
+      //  print("After waitUntil in seekForPlanet for for " + this.name);
         radar.keepSeeking = false;
 
         TreatmentRadarData(radar.planetTouched);

@@ -17,6 +17,10 @@ public class GameMaster : MonoBehaviour {
     [SerializeField]
     private List<Sprite> resourcesVisualIron = new List<Sprite>();
 
+    public int numberOfPowrMax = 0;
+    public int numberOfFoodMax = 0;
+    public int numberOfIronMax = 0;
+
     [SerializeField]
     private List<Sprite> groundSprites = new List<Sprite>();
     [SerializeField]
@@ -132,6 +136,9 @@ public class GameMaster : MonoBehaviour {
                 possibleSpawnPoint.Remove(pointSpawn);
             }
         }
+        numberOfPowrMax = randomResources * 4 / 3;
+        numberOfFoodMax = randomResources * 4 / 3;
+        numberOfIronMax = randomResources * 4 / 3;
 
         int badMoodInt = Random.Range(0, allHomePlanets.Count);
         allHomePlanets[(int)badMoodInt].badMood = true;
@@ -202,7 +209,6 @@ public class GameMaster : MonoBehaviour {
         Home res = null;
         if(allreadyInstantiateHome.Count != 0)
         {
-            print("Good");
             res = allreadyInstantiateHome[0];
             allreadyInstantiateHome.Remove(res);
         } else

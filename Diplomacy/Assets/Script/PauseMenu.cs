@@ -14,6 +14,14 @@ public class PauseMenu : MonoBehaviour {
     public Text bestScoreText;
 
 
+    public Button quitButton;
+
+    private void Start()
+    {
+        if(Application.isWebPlayer)
+            quitButton.gameObject.SetActive(false);
+    }
+
     public void ResumeGame()
     {
         GameMaster.Instance.InversePause();

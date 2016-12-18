@@ -34,15 +34,43 @@ public class Resources : Planet {
         for (int i = 0; i < 3; i++)
         {
             int randomInt = UnityEngine.Random.Range(0, 3);
+            print("Value : " + randomInt + " in " + GameMaster.Instance.numberOfPowrMax + ", "+ GameMaster.Instance.numberOfFoodMax+", "+ GameMaster.Instance.numberOfIronMax + " for " + this.name);
+            int lowerForLast = 2;
+            if (randomInt < 1 && GameMaster.Instance.numberOfPowrMax<=0)
+            {
+                randomInt++;
+                lowerForLast = 1; // so if both powr and iron is <= 0, it will go to food
+                print("GetToDown +1");
+            }
+            if (randomInt >= 1 && randomInt < 2 && GameMaster.Instance.numberOfFoodMax <= 0)
+            {
+                randomInt++;
+                print("GetToDown +2");
+            }
+            if (randomInt >= 2 && randomInt < 3 && GameMaster.Instance.numberOfIronMax <= 0)
+            {
+                randomInt -= lowerForLast;
+                print("GetToDown +3");
+            }
+
+
             if (randomInt < 1)
+            {
                 randomValue = UtilType.Supply.Powr;
+                GameMaster.Instance.numberOfPowrMax--;
+            }
             else if (randomInt < 2)
+            {
                 randomValue = UtilType.Supply.Food;
+                GameMaster.Instance.numberOfFoodMax--;
+            }
             else if (randomInt < 3)
+            {
                 randomValue = UtilType.Supply.Iron;
+                GameMaster.Instance.numberOfIronMax--;
+            }
             slot.Add(randomValue);
             slotVisual[i].sprite = GameMaster.Instance.getResourcesVisual(i, randomValue);
-
         }
 
         resourcesUI.UpdateIcon(slot);
