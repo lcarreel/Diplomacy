@@ -7,7 +7,8 @@ public class Ship : MonoBehaviour {
 
     private GameObject target;
     public Home origin;
-    public bool inOGU = false;
+    public Planet onOrbitOn;
+    public bool inCamp = false;
     //Component
     private Rigidbody2D _rigidbody2D;
     private SpriteRenderer _spriteRenderer;
@@ -49,9 +50,9 @@ public class Ship : MonoBehaviour {
 
 
     //creation AND visual :
-    public void GoToOGU()
+    public void GoToCamp()
     {
-        inOGU = true;
+        inCamp = true;
         if (_spriteRenderer==null)
         {
             _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -61,12 +62,20 @@ public class Ship : MonoBehaviour {
 
         if (target != null)
             target = null;
+        Resources planetResources = onOrbitOn.GetComponent<Resources>();
+        if (planetResources != null)
+        {
+            if( !planetResources.inCamp)
+            {
+                planetResources.joinCamp();
+            }
+        }
     }
-    public void GetOutOGU()
+    public void GetOutCamp()
     {
         if (target == null)
         {
-            inOGU = false;
+            inCamp = false;
             if (this != null)
             {
                 if (_spriteRenderer == null)
@@ -83,7 +92,7 @@ public class Ship : MonoBehaviour {
     #region mouseDrag&DropHandler
     private void OnMouseDown()
     {
-        if (inOGU)
+        if (inCamp)
         {
             _rigidbody2D.isKinematic = true;
             _animator.SetBool("HighLight", true);
@@ -96,39 +105,47 @@ public class Ship : MonoBehaviour {
     }
     private void OnMouseDrag()
     {
-        if (inOGU)
+        if (inCamp)
         {
             GameMaster.Instance.cursorCreator.UpdatePosition();
         }
     }
     private void OnMouseUp()
     {
-        if (inOGU)
+        if (inCamp)
         {
             target = GameMaster.Instance.cursorCreator.ReturnTargetAndDisappear();
-            if (target != null)
-            {
-                Ship shipAttacked = target.GetComponent<Ship>();
-                if (shipAttacked != null)
-                {
-                    if (shipAttacked.GetComponentInParent<Planet>() != null && shipAttacked.GetComponentInParent<Planet>() != this.origin)
-                    {
-                        target = shipAttacked.origin.gameObject;
-                    }
-                }
-                StartCoroutine(GoToTargetPoint(speed));
+            ReactionWithTarget(target);
 
-            }
-           
+
             _rigidbody2D.isKinematic = false;
             _animator.SetBool("HighLight", false);
-            if (target.GetComponent<Resources>() )
-                if(target.GetComponent<Resources>().GetFlux().Count == 0)
+            
+        }
+
+    }
+    public void ReactionWithTarget(GameObject newTarget)
+    {
+        this.target = newTarget;
+        if (target != null)
+        {
+            Ship shipAttacked = target.GetComponent<Ship>();
+            if (shipAttacked != null)
+            {
+                if (shipAttacked.GetComponentInParent<Planet>() != null && shipAttacked.GetComponentInParent<Planet>() != this.origin)
+                {
+                    target = shipAttacked.origin.gameObject;
+                }
+            }
+            StartCoroutine(GoToTargetPoint(speed));
+
+        }
+        if (target.GetComponent<Resources>())
+            if (target.GetComponent<Resources>().GetFlux().Count == 0)
                 _audioSource.PlayOneShot(sendToMine, 0.1f);
             else if (target.GetComponent<Planet>())
-                    if (!target.GetComponent<Planet>().inOGU)
-                _audioSource.PlayOneShot(sendToWar, 0.1f);
-        }
+                if (!target.GetComponent<Planet>().inCamp)
+                    _audioSource.PlayOneShot(sendToWar, 0.1f);
 
     }
     #endregion
@@ -184,9 +201,9 @@ public class Ship : MonoBehaviour {
 
     private void AttackPlanet(Planet planetAttacked)
     {
-        if (planetAttacked.inOGU!=inOGU) {
+        if (planetAttacked.inCamp!=inCamp) {
             defineDefenseForThisAttack(planetAttacked);
-        } else if (!inOGU)
+        } else if (!inCamp)
         {
             if (planetAttacked.getNumberOfShipOnIt() == 0)
             {
@@ -228,7 +245,7 @@ public class Ship : MonoBehaviour {
         Home homeAttacked = planetAttacked.GetComponent<Home>();
         if (homeAttacked != null)
         {
-            if (homeAttacked.inOGU==inOGU)
+            if (homeAttacked.inCamp==inCamp)
                 homeAttacked.GoOrbit(this);
             else
                 AttackHome(homeAttacked);
@@ -236,10 +253,10 @@ public class Ship : MonoBehaviour {
         else
         {
             Resources resources = planetAttacked.GetComponent<Resources>();
-            if (inOGU)
+            if (inCamp)
             {
                 //IMPORTANT : planetAttacked != Home ! (because of the previous else)
-                resources.joinOGU();
+                resources.joinCamp();
             } else
             {
                 TakePlanetOver(resources);
@@ -250,7 +267,7 @@ public class Ship : MonoBehaviour {
     private void TakePlanetOver(Resources resources)
     {
         //print("I'm here to take it");
-        resources.quitOGU();
+        resources.quitCamp();
         resources.emptyFlux();
         resources.SetFlux(origin, gameObject.AddComponent<Flux>());
     }

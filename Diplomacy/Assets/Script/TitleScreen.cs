@@ -27,7 +27,7 @@ public class TitleScreen : MonoBehaviour {
         if (_animator == null)
             _animator = GetComponent<Animator>();
         _animator.SetTrigger("OnClick");
-
+        
     }
 
     public void ChargeFollowingScene()

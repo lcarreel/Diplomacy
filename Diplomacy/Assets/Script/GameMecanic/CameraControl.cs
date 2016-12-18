@@ -20,7 +20,7 @@ public class CameraControl : MonoBehaviour {
         _camera = this.GetComponent<Camera>();
         float zoomGapMinMax = maxSize - minSize;
         stepForBorder = new Vector2(screenBorder.x/zoomGapMinMax, screenBorder.y / zoomGapMinMax );
-        positionLimit = stepForBorder * (maxSize - Camera.main.orthographicSize);
+        positionLimit = Vector3.zero;
     }
 	
 	// Update is called once per frame

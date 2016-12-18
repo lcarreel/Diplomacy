@@ -47,20 +47,20 @@ public class Resources : Planet {
 
         resourcesUI.UpdateIcon(slot);
 
-        joinOGU();
+        joinCamp();
 
     }
     #endregion
 
-    public void joinOGU()
+    public void joinCamp()
     {
-        inOGU = true;
+        inCamp = true;
         haloOGU.gameObject.SetActive(true);
         haloOut.gameObject.SetActive(false);
     }
-    public void quitOGU()
+    public void quitCamp()
     {
-        inOGU = false;
+        inCamp = false;
         haloOGU.gameObject.SetActive(false);
         haloOut.gameObject.SetActive(true);
     }

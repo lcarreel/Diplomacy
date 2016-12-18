@@ -30,6 +30,9 @@ public class GameMaster : MonoBehaviour {
     private GameObject resourcesPlanet;
     public int minPlanetHome = 5;
     public int maxPlanetHome = 7;
+    
+    public List<Home> allreadyInstantiateHome = new List<Home>();
+    public List<Resources> allreadyInstantiateResources = new List<Resources>();
 
     public List<Home> allHomePlanets = new List<Home>();
     public List<Resources> allResourcesPlanets = new List<Resources>();
@@ -100,7 +103,7 @@ public class GameMaster : MonoBehaviour {
 
         for(int i = 0; i < randomHome; i++)
         {
-            Home homeCreated = Instantiate(homePlanet).GetComponent<Home>();
+            Home homeCreated = GetNewHome();
             int randomGet = TryRandomTillSuccess(homeCreated, nameUsed);
             allHomePlanets.Add(homeCreated);
             PointSpawn newPosition = possibleSpawnPoint[randomGet % possibleSpawnPoint.Count];
@@ -116,7 +119,7 @@ public class GameMaster : MonoBehaviour {
 
         for (int i = 0; i < randomResources; i++)
         {
-            Resources resourcesCreated = Instantiate(resourcesPlanet).GetComponent<Resources>();
+            Resources resourcesCreated = GetNewResources();
             int randomGet = TryRandomTillSuccess(resourcesCreated, nameUsed);
             allResourcesPlanets.Add(resourcesCreated);
             PointSpawn newPosition = possibleSpawnPoint[randomGet % possibleSpawnPoint.Count];
@@ -194,6 +197,34 @@ public class GameMaster : MonoBehaviour {
         }
         return randomNum;
     }
+    public Home GetNewHome()
+    {
+        Home res = null;
+        if(allreadyInstantiateHome.Count != 0)
+        {
+            print("Good");
+            res = allreadyInstantiateHome[0];
+            allreadyInstantiateHome.Remove(res);
+        } else
+        {
+            res = Instantiate(homePlanet).GetComponent<Home>();
+        }
+        return res;
+    }
+    public Resources GetNewResources()
+    {
+        Resources res = null;
+        if (allreadyInstantiateResources.Count != 0)
+        {
+            res = allreadyInstantiateResources[0];
+            allreadyInstantiateResources.Remove(res);
+        }
+        else
+        {
+            res = Instantiate(resourcesPlanet).GetComponent<Resources>();
+        }
+        return res;
+    }
 
     public bool gameEnd = false;
     public int score = 0;
@@ -243,13 +274,11 @@ public class GameMaster : MonoBehaviour {
     public Sprite GetRandomSpriteGround()
     {
         int random = (int)Random.Range(0, groundSprites.Count);
-        print(random +" Ho");
         return groundSprites[random];
     }
     public Sprite GetRandomSpriteCloud()
     {
         int random = (int)Random.Range(0, cloudSprites.Count);
-        print(random + " Clou");
         return cloudSprites[random];
     }
 
@@ -349,7 +378,7 @@ public class GameMaster : MonoBehaviour {
         int planetInPeace = 0;
         foreach(Home homePlanet in FindObjectsOfType<Home>())
         {
-            if (!homePlanet.inOGU)
+            if (!homePlanet.inCamp)
             {
                 gameFinish = false;
             } else

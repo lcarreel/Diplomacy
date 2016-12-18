@@ -7,7 +7,7 @@ public abstract class Planet : MonoBehaviour {
     public UtilType.PlanetID nameInGame;
 
     [SerializeField]
-    public bool inOGU = false;/*{ get; private set; }*/
+    public bool inCamp = false;/*{ get; private set; }*/
 
     public List<Ship> _shipAnchorToThisPlanet = new List<Ship>();
 
@@ -88,13 +88,14 @@ public abstract class Planet : MonoBehaviour {
             Quaternion q = ship.transform.localRotation;
             q.eulerAngles += eulerAnglesRotationOfShipInOrbit;
             ship.transform.localRotation = q;
+            ship.onOrbitOn = this;
         }
     }
 
 
     private void OnMouseDown()
     {
-        if (inOGU)
+        if (inCamp)
         {
             if (_animator == null)
                 _animator = GetComponent<Animator>();
@@ -106,29 +107,36 @@ public abstract class Planet : MonoBehaviour {
 
     private void OnMouseDrag()
     {
-        if(inOGU)
+        if(inCamp)
             GameMaster.Instance.cursorCreator.UpdatePosition();
     }
 
     private void OnMouseUp()
     {
-        if (inOGU)
+        if (inCamp)
         {
-            Home home;
-
+            Home targetHome;
+            Resources targetResources;
             target = GameMaster.Instance.cursorCreator.ReturnTargetAndDisappear();
             if (target != null)
             {
-                if (target.GetComponent<Home>())
+                targetResources = target.GetComponent<Resources>();
+                targetHome = target.GetComponent<Home>();
+                if (targetHome!=null)
                 {
-                    home = target.GetComponent<Home>();
                     //TODO VERIFICATION FLUX EXISTE OU NON
                     if (GetComponent<Resources>())
-                        GetComponent<Resources>().SetFlux(home, gameObject.AddComponent<Flux>());
+                        GetComponent<Resources>().SetFlux(targetHome, gameObject.AddComponent<Flux>());
+                    else if (!targetHome.inCamp)
+                    {
+                        if(getNumberOfShipOnIt() != 0)
+                        _shipAnchorToThisPlanet[0].ReactionWithTarget(target);
+                    }
                 }
-                else if (target.GetComponent<Resources>())
+                else if (targetResources!=null)
                 {
-
+                    if (getNumberOfShipOnIt() != 0)
+                        _shipAnchorToThisPlanet[0].ReactionWithTarget(target);
                 }
                 //print("target ok");
             }

@@ -33,14 +33,14 @@ public class Home : Planet {
     [SerializeField]
     private SpriteRenderer haloOut;
     [SerializeField]
-    private SpriteRenderer haloOGU;
+    private SpriteRenderer haloCamp;
 
 
     private HomeUI homeUI;
 
     public AudioClip spawnAmoi;
     public AudioClip unhappy;
-    public AudioClip newOGU;
+    public AudioClip newCamp;
     public AudioClip killCivil;
     public AudioClip destroyHome;
     public AudioClip healHome;
@@ -60,7 +60,7 @@ public class Home : Planet {
     public void Start()
     {
         this.name = "PlanetHome " + this.nameInGame;
-        this.inOGU = false;
+        this.inCamp = false;
 
         Vector3 rotation = Vector3.forward * UnityEngine.Random.Range(0, 360);
         groundImage.sprite = GameMaster.Instance.GetRandomSpriteGround();
@@ -93,7 +93,7 @@ public class Home : Planet {
         //print("Depart mood = " + mood + " for " + this.name);
         if (mood > 60)
         {
-            joinOGU();
+            joinCamp();
         } else
         {
             quitOGU();
@@ -155,16 +155,16 @@ public class Home : Planet {
         //print("SetMood " + this.name);
         mood = Mathf.Min(value,100);
         mood = Mathf.Max(value, 0);
-        if (mood < 40 && inOGU)
+        if (mood < 40 && inCamp)
         {
 //            print("SetMood and quit " + this.name);
             quitOGU();
             _audioSource.PlayOneShot(unhappy, 0.1f);
         }
-        if(mood > 60 && !inOGU)
+        if(mood > 60 && !inCamp)
         {
-            joinOGU();
-            _audioSource.PlayOneShot(newOGU, 0.1f);
+            joinCamp();
+            _audioSource.PlayOneShot(newCamp, 0.1f);
         } 
 
         UpdateValueAndVisual();
@@ -172,8 +172,8 @@ public class Home : Planet {
 
     private void quitOGU()
     {
-        inOGU = false;
-        haloOGU.gameObject.SetActive(false);
+        inCamp = false;
+        haloCamp.gameObject.SetActive(false);
         haloOut.gameObject.SetActive(true);
 
         //TO DO : Kill all ship near him or convert their 
@@ -181,25 +181,24 @@ public class Home : Planet {
         foreach(Ship ship in _shipAnchorToThisPlanet)
         {
             //convert :
-            ship.GetOutOGU();
-            //kill
+            ship.GetOutCamp();
+            //killjoinCamp
             //ship.DestroyShip();
         }
-        //print("quitOGU");
 
-//        print("quit OGU : " + this.name);
+//        print("quit Camp : " + this.name);
         AttackAroundHim();
 
         GameMaster.Instance.RemovePlanetInPeace();
     }
-    private void joinOGU()
+    private void joinCamp()
     {
-        inOGU = true;
-        haloOGU.gameObject.SetActive(true);
+        inCamp = true;
+        haloCamp.gameObject.SetActive(true);
         haloOut.gameObject.SetActive(false);
         foreach(Ship ship in wholeBadArmada)
         {
-            ship.GoToOGU();
+            ship.GoToCamp();
         }
         GameMaster.Instance.AddPlanetInPeace();
     }
@@ -321,15 +320,16 @@ public class Home : Planet {
             this.addShipAnchor(shipCreate);
             //define shipCamp
             shipCreate.origin = this;
+            shipCreate.onOrbitOn = this;
             shipCreate.SetLocation(this);
-            if (inOGU)
+            if (inCamp)
             {
-                shipCreate.GoToOGU();
+                shipCreate.GoToCamp();
                 _audioSource.PlayOneShot(spawnAmoi, 0.1f);
             }
             else
             {
-                shipCreate.GetOutOGU();
+                shipCreate.GetOutCamp();
                 wholeBadArmada.Add(shipCreate);
             }
         }
@@ -387,7 +387,7 @@ public class Home : Planet {
         print("Attack around him " + this.name);
         //First IA Method
         UpdateSupplyWanted();
-        if(!inOGU && supplyWanted.magnitude > 0)
+        if(!inCamp && supplyWanted.magnitude > 0)
         {
             StartCoroutine(seekForPlanetToInvade());
         } else
