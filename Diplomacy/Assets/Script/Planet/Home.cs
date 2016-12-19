@@ -216,6 +216,7 @@ public class Home : Planet {
             destroyCivil(1);
         } else
         {
+            print("What ?");
             destroyInAttack = false;
         }
         return destroyInAttack;
@@ -312,7 +313,7 @@ public class Home : Planet {
     }
     public void CreateShip()
     {
-        if (Time.deltaTime != 0 && _shipAnchorToThisPlanet.Count <= 5)
+        if (Time.deltaTime != 0 && getNumberOfShipOnIt() <= 5)
         {
             Ship shipCreate = Instantiate(GameMaster.Instance.ship).GetComponent<Ship>();
             shipCreate.transform.position = this.transform.position + ((Vector3)Vector2.right);
@@ -387,13 +388,16 @@ public class Home : Planet {
      //   print("Attack around him " + this.name);
         //First IA Method
         UpdateSupplyWanted();
-        if(!inCamp && supplyWanted.magnitude > 0)
+        if (getNumberOfShipOnIt() == 0)
+        {
+            LaterSend();
+        }
+        else if(!inCamp && supplyWanted.magnitude > 0)
         {
             StartCoroutine(seekForPlanetToInvade());
         } else
         {
-            //Seem to make everything laggy
-            Invoke("AttackAroundHim",StaticValue.tempo*35);
+            LaterSend();
         }
     }
     private IEnumerator seekForPlanetToInvade()
@@ -412,92 +416,121 @@ public class Home : Planet {
 
     }
 
+    private void LaterSend()
+    {
+        Invoke("AttackAroundHim", StaticValue.tempo * 10);
+        Invoke("MessageForSend" , StaticValue.tempo * 10);
+    }
+    private void MessageForSend()
+    {
+        //print("recalcul !");
+    }
+
     private IEnumerator seekForMorePlanetToInvade()
     {
+        //print("Re looking for");
         radar.origin = this;
         radar.keepSeeking = true;
         radar.planetTouched.Clear();
-        yield return new WaitUntil(() => (radar.planetTouched.Count >= 5));
+        yield return new WaitUntil(() => (radar.planetTouched.Count >= 5 || radar.tooLarge));
         radar.keepSeeking = false;
+        if (radar.tooLarge)
+        {
+            radar.transform.localScale = Vector3.one;
+            LaterSend();
+            radar.tooLarge = false;
+        }
+        else
+        {
+            TreatmentRadarData(radar.planetTouched);
+        }
 
-        TreatmentRadarData(radar.planetTouched);
     }
 
     private void TreatmentRadarData(List<Planet> planetData)
     {
    //     print("TreatmentRadarData for "+this.name);
         List<Planet> noRisk = new List<Planet>();
-        List<float> risqueLvl = new List<float>();
-        int planetUseless = planetData.Count;
+        Dictionary<Planet, float> risqueLvl = new Dictionary<Planet, float>();
         foreach(Planet planet in planetData)
         {
-            if (planet.getNumberOfShipOnIt() == 0)
+            if(planet.getNumberOfShipOnIt() == 0)
             {
-                noRisk.Add(planet);
-                risqueLvl.Add(2047);
+
             }
-            else if(planet.getFatherOfShipOnIt().gameObject == this.gameObject)
-             {
-                    planetUseless++;
-                    risqueLvl.Add(2047);
-            }
-            else 
+            else if(!planet.getFatherOfShipOnIt().gameObject == this.gameObject)
             {
                 float riskValue = (planet.transform.position - transform.position).magnitude;
                 riskValue *= (planet.getNumberOfShipOnIt() + 1);
                 float supplyValue = planet.getSupplyValue().x * supplyWanted.x + planet.getSupplyValue().y * supplyWanted.y + planet.getSupplyValue().z * supplyWanted.z;
-                if(supplyValue == 0)
-                {
-                    planetUseless++;
-                    risqueLvl.Add(2047);
-                } else
+                if(supplyValue != 0)
                 {
                     Resources planetResources = planet.GetComponent<Resources>();
                     if (planetResources != null)
                     {
-                        if (planetResources.FluxThisPlanet(this))
-                        {
-                            print(" AM I MADE THIS !!! IT'S WORK !!");
-                            planetUseless++;
-                            risqueLvl.Add(2047);
-                        } else
+                        if (!planetResources.FluxThisPlanet(this))
                         {
                             riskValue /= supplyValue;
-                            risqueLvl.Add(riskValue);
+                            print("add in resources");
+                            risqueLvl.Add(planet, riskValue);
                         }
                     } else
                     {
                         riskValue /= supplyValue;
-                        risqueLvl.Add(riskValue);
+                        print("add in home ");
+                        risqueLvl.Add(planet, riskValue);
                     }
                     
                 }
+
+                
             }
-
+            if (!risqueLvl.ContainsKey(planet) && planet.getNumberOfShipOnIt() == 0)
+            {
+                noRisk.Add(planet);
+            }
         } // fin du foreach
-
-        if(planetUseless == 0)
+        string risqueList = "";
+        string noRiskList = "";
+        foreach (Planet planet in risqueLvl.Keys)
+        {
+            risqueList += ", " + planet.name + " (" + risqueLvl[planet] + ")";
+        }
+        foreach (Planet planet in noRisk)
+        {
+            noRiskList += ", " + planet.name;
+        }
+//        print("RisqueLvl (" + risqueLvl.Count +") : "+ risqueList);
+//        print("noRisk (" + noRisk.Count + ") = "+noRiskList);
+        if(risqueLvl.Count == 0 && noRisk.Count == 0)
         {
             StartCoroutine(seekForMorePlanetToInvade());
         } else
         {
             Destroy(radar.gameObject);
-            ChooseBestPlanet(planetData, noRisk, risqueLvl);
+            ChooseBestPlanet(noRisk, risqueLvl);
         }
-        //if no risk ==> verifier si resources ou home
     }
 
-    private void ChooseBestPlanet(List<Planet> planetData, List<Planet> noRisk, List<float> risqueLvl )
+    private void ChooseBestPlanet(List<Planet> noRisk, Dictionary<Planet, float> risqueLvl )
     {
-        int maxIndex = 0;
-        for ( int i = 0; i < risqueLvl.Count; i++ )
+        string printLog = "value = ";
+        Planet planetMax = null;
+        foreach(Planet planet in risqueLvl.Keys)
         {
-            if(risqueLvl[i] < risqueLvl[maxIndex])
+            if (planetMax == null)
+                planetMax = planet;
+            if(risqueLvl[planet] < risqueLvl[planetMax])
             {
-                maxIndex = i;
+                planetMax = planet;
+                printLog += " new max = ";
             }
+            printLog = printLog + risqueLvl[planet] + " , ";
         }
-        noRisk.Add(planetData[maxIndex]);
+        //print(printLog);
+        List<Planet> planetToSendShip = new List<Planet>();
+        planetToSendShip.Add(planetMax);
+        planetToSendShip.AddRange(noRisk);
         LaunchShipTo(noRisk);
     }
 
@@ -514,8 +547,8 @@ public class Home : Planet {
             else
             {
                 i = planetToInvade.Count;
-//                print("Remis a plus tard : " + this.name);
-                Invoke("AttackAroundHim", 5 * StaticValue.tempo);
+                //print("Remis a plus tard : " + this.name);
+                LaterSend();
             }
         }
 
@@ -523,9 +556,7 @@ public class Home : Planet {
 
     private void LaunchIndividualShipTo(Planet planet)
     {
-            _shipAnchorToThisPlanet[0].GoToPlanetByIA(planet);
-            _shipAnchorToThisPlanet.Remove(_shipAnchorToThisPlanet[0]);
-        
+        _shipAnchorToThisPlanet[0].GoToPlanetByIA(planet);
     }
 
 

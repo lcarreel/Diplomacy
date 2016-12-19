@@ -40,10 +40,20 @@ public abstract class Planet : MonoBehaviour {
             addShipAnchor(ship);
     }
     
+    public bool removeShipAnchor(Ship ship)
+    {
+        bool res = _shipAnchorToThisPlanet.Contains(ship);
+        if (res)
+        {
+            _shipAnchorToThisPlanet.Remove(ship);
+        } 
+        return res;
+    }
+
     public void destroyAShipAnchor()
     {
 
-        if (_shipAnchorToThisPlanet.Count != 0)
+        if (getNumberOfShipOnIt() != 0)
         {
 
             if(_audioSource != null)
@@ -71,18 +81,23 @@ public abstract class Planet : MonoBehaviour {
 
     public Planet getFatherOfShipOnIt()
     {
-        return _shipAnchorToThisPlanet[0].origin;
+        Planet res = null;
+        if (getNumberOfShipOnIt() != 0)
+            res = _shipAnchorToThisPlanet[0].origin;
+        return res;
     }
 
     public abstract Vector3 getSupplyValue();
 
     public void GoOrbit(Ship ship)
     {
-        if(_shipAnchorToThisPlanet.Count >= 5)
+        if(getNumberOfShipOnIt() >= 5)
         {
             ship.DestroyShip();
         } else
         {
+            if(ship.onOrbitOn != null)
+                ship.onOrbitOn.removeShipAnchor(ship);
             addShipAnchor(ship);
             ship.transform.SetParent(orbit.transform);
             Quaternion q = ship.transform.localRotation;

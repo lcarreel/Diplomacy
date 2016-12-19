@@ -5,6 +5,7 @@ public class Ship : MonoBehaviour {
 
     public float speed = 1;
 
+    [SerializeField]
     private GameObject target;
     public Home origin;
     public Planet onOrbitOn;
@@ -138,7 +139,6 @@ public class Ship : MonoBehaviour {
                 }
             }
             StartCoroutine(GoToTargetPoint(speed));
-
         }
         if (target.GetComponent<Resources>())
             if (target.GetComponent<Resources>().GetFlux().Count == 0)
@@ -164,7 +164,9 @@ public class Ship : MonoBehaviour {
     IEnumerator GoToTargetPoint(float speed)
     {
         transform.SetParent(null);
-        
+        onOrbitOn.removeShipAnchor(this);
+        onOrbitOn = null;
+
         //look at target
         Quaternion rotation = Quaternion.LookRotation
              (target.transform.position - transform.position, transform.TransformDirection(Vector3.up));
@@ -209,7 +211,7 @@ public class Ship : MonoBehaviour {
             {
                 AttackUndefendedPlanet(planetAttacked);
             }
-            else if(planetAttacked.getFatherOfShipOnIt().gameObject != origin)
+            else if(planetAttacked.getFatherOfShipOnIt().gameObject != origin.gameObject)
             {
                 AttackDefendedPlanet(planetAttacked);
             } else
@@ -243,16 +245,21 @@ public class Ship : MonoBehaviour {
     private void AttackUndefendedPlanet(Planet planetAttacked)
     {
         Home homeAttacked = planetAttacked.GetComponent<Home>();
+        Resources resources = planetAttacked.GetComponent<Resources>();
         if (homeAttacked != null)
         {
-            if (homeAttacked.inCamp==inCamp)
-                homeAttacked.GoOrbit(this);
+            if (homeAttacked.inCamp == inCamp)
+            {
+                if(inCamp)
+                    homeAttacked.GoOrbit(this);
+                else
+                    AttackHome(homeAttacked);
+            }
             else
                 AttackHome(homeAttacked);
         }
-        else
+        else if(resources != null)
         {
-            Resources resources = planetAttacked.GetComponent<Resources>();
             if (inCamp)
             {
                 //IMPORTANT : planetAttacked != Home ! (because of the previous else)
@@ -276,7 +283,7 @@ public class Ship : MonoBehaviour {
     {
         if (homeAttacked.Attacked(this))
         {
-            origin.AddRessources(Vector3.one * 12);
+            origin.AddRessources(Vector3.one * 80);
             DestroyShip();
         } else
         {
@@ -301,6 +308,9 @@ public class Ship : MonoBehaviour {
         _audioSource.PlayOneShot(destroyShip, 0.1f);
         if (origin.wholeBadArmada.Contains(this))
             origin.wholeBadArmada.Remove(this);
+        if(onOrbitOn != null)
+            if (onOrbitOn._shipAnchorToThisPlanet.Contains(this))
+                onOrbitOn.removeShipAnchor(this);
         GameMaster.Instance.AddCasualties(1);
         Destroy(this.gameObject);
     }
