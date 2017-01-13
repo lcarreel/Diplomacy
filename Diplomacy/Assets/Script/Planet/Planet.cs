@@ -19,15 +19,19 @@ public abstract class Planet : MonoBehaviour {
 
     private Animator _animator;
 
+    //Part made by Lise Careel
     protected AudioSource _audioSource;
     public AudioClip destroyShipSound;
+    //END Part made by Lise Careel
 
     //Method part
 
+    //Part made by Lise Careel
     private void Awake()
     {
         _audioSource = GetComponent<AudioSource>();
     }
+    //END Part made by Lise Careel
 
     public void addShipAnchor(Ship ship)
     {
@@ -55,9 +59,10 @@ public abstract class Planet : MonoBehaviour {
 
         if (getNumberOfShipOnIt() != 0)
         {
-
-            if(_audioSource != null)
+            //Part made by Lise Careel
+            if (_audioSource != null)
                 _audioSource.PlayOneShot(destroyShipSound, 0.1f);
+            //END Part made by Lise Careel
             Ship shipWhoSacrificeFOrOther = _shipAnchorToThisPlanet[0];
             _shipAnchorToThisPlanet.Remove(shipWhoSacrificeFOrOther);
             shipWhoSacrificeFOrOther.DestroyShip();
@@ -155,8 +160,10 @@ public abstract class Planet : MonoBehaviour {
                 }
                 //print("target ok");
             }
+            //Security
             if (_animator == null)
                 _animator = GetComponent<Animator>();
+            //Security end
             _animator.SetBool("HighLight", false);
         }
     }

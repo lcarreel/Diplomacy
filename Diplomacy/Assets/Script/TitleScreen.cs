@@ -13,15 +13,16 @@ public class TitleScreen : MonoBehaviour {
     private UtilType.Difficulty diff = UtilType.Difficulty.Easy;
     private UtilType.Speed spd = UtilType.Speed.FirstStep;
 
+    private Animator _animator;
 
     private void Awake()
     {
         diff = UtilType.Difficulty.Easy;
-        PlayerPrefs.SetInt("DIFFICULTY", 0);
+        PlayerPrefs.SetInt(StaticValue.nameForDiffInPlayerPref, 0);
         spd = UtilType.Speed.FirstStep;
-        PlayerPrefs.SetInt("SPEED", 0);
+        PlayerPrefs.SetInt(StaticValue.nameForSpeedInPlayerPref, 0);
     }
-    Animator _animator;
+
 	// Update is called once per frame
 	public void OnClick () {
         if (_animator == null)
@@ -30,6 +31,7 @@ public class TitleScreen : MonoBehaviour {
         
     }
 
+    //Call by the animator in the animation named "lastTransition"
     public void ChargeFollowingScene()
     {
         if( diff == UtilType.Difficulty.Easy )
@@ -55,28 +57,27 @@ public class TitleScreen : MonoBehaviour {
     public void ChangeDifficulty()
     {
         string resString = "Easy";
-        string nameInPlayerPref = "DIFFICULTY";
         switch (diff)
         {
             case UtilType.Difficulty.Easy:
                 diff = UtilType.Difficulty.Normal;
                 resString = "Normal";
-                PlayerPrefs.SetInt(nameInPlayerPref, 1);
+                PlayerPrefs.SetInt(StaticValue.nameForDiffInPlayerPref, 1);
                 break;
             case UtilType.Difficulty.Normal:
                 diff = UtilType.Difficulty.Hard;
                 resString = "Hard";
-                PlayerPrefs.SetInt(nameInPlayerPref, 2);
+                PlayerPrefs.SetInt(StaticValue.nameForDiffInPlayerPref, 2);
                 break;
             case UtilType.Difficulty.Hard:
                 diff = UtilType.Difficulty.Hell;
                 resString = "Hell";
-                PlayerPrefs.SetInt(nameInPlayerPref, 3);
+                PlayerPrefs.SetInt(StaticValue.nameForDiffInPlayerPref, 3);
                 break;
             case UtilType.Difficulty.Hell:
                 diff = UtilType.Difficulty.Easy;
                 resString = "Easy";
-                PlayerPrefs.SetInt(nameInPlayerPref, 0);
+                PlayerPrefs.SetInt(StaticValue.nameForDiffInPlayerPref, 0);
                 break;
         }
         difficultyText.text = resString;
@@ -84,28 +85,27 @@ public class TitleScreen : MonoBehaviour {
     public void ChangeSpeed()
     {
         string resString = "FirsStep";
-        string nameInPlayerPref = "SPEED";
         switch (spd)
         {
             case UtilType.Speed.FirstStep:
                 spd = UtilType.Speed.CruisingSpeed;
                 resString = "CruisingSpeed";
-                PlayerPrefs.SetInt(nameInPlayerPref, 1);
+                PlayerPrefs.SetInt(StaticValue.nameForSpeedInPlayerPref, 1);
                 break;
             case UtilType.Speed.CruisingSpeed:
                 spd = UtilType.Speed.High;
                 resString = "High";
-                PlayerPrefs.SetInt(nameInPlayerPref, 2);
+                PlayerPrefs.SetInt(StaticValue.nameForSpeedInPlayerPref, 2);
                 break;
             case UtilType.Speed.High:
                 spd = UtilType.Speed.LightSpeed;
                 resString = "LightSpeed";
-                PlayerPrefs.SetInt(nameInPlayerPref, 3);
+                PlayerPrefs.SetInt(StaticValue.nameForSpeedInPlayerPref, 3);
                 break;
             case UtilType.Speed.LightSpeed:
                 spd = UtilType.Speed.FirstStep;
                 resString = "FirstStep";
-                PlayerPrefs.SetInt(nameInPlayerPref, 0);
+                PlayerPrefs.SetInt(StaticValue.nameForSpeedInPlayerPref, 0);
                 break;
         }
 

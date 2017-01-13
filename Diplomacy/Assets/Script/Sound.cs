@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// This script was made by Lise Careel
+/// </summary>
 public class Sound : MonoBehaviour {
 
     public static string muteStringInPlayerPrefs = "MUTE";

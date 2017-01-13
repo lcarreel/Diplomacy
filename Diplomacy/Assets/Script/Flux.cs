@@ -2,6 +2,9 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+/// <summary>
+/// This script was made by Lise Careel 
+/// </summary>
 public class Flux : MonoBehaviour {
 
     private Home home_planet;

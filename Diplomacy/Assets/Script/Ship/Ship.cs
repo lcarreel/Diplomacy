@@ -16,18 +16,22 @@ public class Ship : MonoBehaviour {
     private Animator _animator;
     private Planet location;
 
+    //Part made by Lise Careel
     private AudioSource _audioSource;
     public AudioClip selectIdle;
     public AudioClip selectMining;
     public AudioClip sendToWar;
     public AudioClip sendToMine;
     public AudioClip destroyShip;
+    //END Part made by Lise Careel
 
     private TrailRenderer _trailRenderer;
 
     private void Awake()
     {
+        //Part made by Lise Careel
         _audioSource = GetComponent<AudioSource>();
+        //END Part made by Lise Careel
         _trailRenderer = GetComponentInChildren<TrailRenderer>();
     }
 
@@ -98,10 +102,13 @@ public class Ship : MonoBehaviour {
             _rigidbody2D.isKinematic = true;
             _animator.SetBool("HighLight", true);
             GameMaster.Instance.cursorCreator.Create(this.gameObject);
+
+            //Part made by Lise Careel
             if (location.GetComponent<Home>())
                 _audioSource.PlayOneShot(selectIdle, 0.1f);
             else if (location.GetComponent<Resources>())
                 _audioSource.PlayOneShot(selectMining, 0.1f);
+            //END Part made by Lise Careel
         }
     }
     private void OnMouseDrag()
@@ -140,12 +147,15 @@ public class Ship : MonoBehaviour {
             }
             StartCoroutine(GoToTargetPoint(speed));
         }
+
+        //Part made by Lise Careel
         if (target.GetComponent<Resources>())
             if (target.GetComponent<Resources>().GetFlux().Count == 0)
                 _audioSource.PlayOneShot(sendToMine, 0.1f);
             else if (target.GetComponent<Planet>())
                 if (!target.GetComponent<Planet>().inCamp)
                     _audioSource.PlayOneShot(sendToWar, 0.1f);
+        //END Part made by Lise Careel
 
     }
     #endregion
@@ -167,11 +177,11 @@ public class Ship : MonoBehaviour {
         onOrbitOn.removeShipAnchor(this);
         onOrbitOn = null;
 
-        //look at target
+        //look at target ( Code take on http://answers.unity3d.com/questions/585035/lookat-2d-equivalent-.html , thanks to LEDWORKS for it )
         Quaternion rotation = Quaternion.LookRotation
              (target.transform.position - transform.position, transform.TransformDirection(Vector3.up));
         transform.rotation = new Quaternion(0, 0, rotation.z, rotation.w);
-        //
+        //end
 
         float distanceDone = 0;
         while(distanceDone < 1 && target!=null)
@@ -194,7 +204,7 @@ public class Ship : MonoBehaviour {
             {
                 AttackPlanet(planetAttacked);
             }
-//            print("Target = null by contact with planet");
+            //print("Target = null by contact with planet");
             target = null;
         }
     }
@@ -295,17 +305,21 @@ public class Ship : MonoBehaviour {
 
     public void ChangeKinematicState(bool value)
     {
+        //Security
         if (_rigidbody2D == null)
         {
             if(this != null)
-            _rigidbody2D = GetComponent<Rigidbody2D>();
+                _rigidbody2D = GetComponent<Rigidbody2D>();
         }
+        //Security end
         _rigidbody2D.isKinematic = value;
     }
-
+    
     public void DestroyShip()
     {
+        //Part made by Lise Careel
         _audioSource.PlayOneShot(destroyShip, 0.1f);
+        //END Part made by Lise Careel
         if (origin.wholeBadArmada.Contains(this))
             origin.wholeBadArmada.Remove(this);
         if(onOrbitOn != null)

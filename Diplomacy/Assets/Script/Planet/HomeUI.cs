@@ -89,7 +89,6 @@ public class HomeUI : MonoBehaviour {
         }
         else
         {
-            //   backgroundMoodSlider.color = Color.yellow+Color.red;
             _animMood.SetBool("Danger", true);
         }
     }

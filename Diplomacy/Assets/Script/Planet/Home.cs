@@ -5,21 +5,13 @@ using System.Collections.Generic;
 using System;
 
 public class Home : Planet {
-
-
-
-
-
-
-
-
-
+    
     private int civil = 50;
     public int mood = 50;
     private int state = 1;
 
-    public bool badMood = false;
-    public bool goodMood = false;
+    public bool badMoodForced = false;
+    public bool goodMoodForced = false;
 
     private float food = 0;
     private float foodNeeded;
@@ -38,12 +30,14 @@ public class Home : Planet {
 
     private HomeUI homeUI;
 
+    //Part made by Lise Careel
     public AudioClip spawnAmoi;
     public AudioClip unhappy;
     public AudioClip newCamp;
     public AudioClip killCivil;
     public AudioClip destroyHome;
     public AudioClip healHome;
+    //END Part made by Lise Careel
 
 
     //temporary
@@ -84,9 +78,9 @@ public class Home : Planet {
         iron = (int)UnityEngine.Random.Range(100, 280);
         powr = (int)UnityEngine.Random.Range(100, 280);
 
-        if(goodMood)
+        if(goodMoodForced)
             SetMood((int)UnityEngine.Random.Range(65, 100));
-        else if (badMood)
+        else if (badMoodForced)
             SetMood((int)UnityEngine.Random.Range(0, 35));
         else
             SetMood((int)UnityEngine.Random.Range(20, 90));
@@ -157,15 +151,19 @@ public class Home : Planet {
         mood = Mathf.Max(value, 0);
         if (mood < 40 && inCamp)
         {
-//            print("SetMood and quit " + this.name);
+            //print("SetMood and quit " + this.name);
             quitOGU();
+            //Part made by Lise Careel
             _audioSource.PlayOneShot(unhappy, 0.1f);
+            //END Part made by Lise Careel
         }
-        if(mood > 60 && !inCamp)
+        if (mood > 60 && !inCamp)
         {
             joinCamp();
+            //Part made by Lise Careel
             _audioSource.PlayOneShot(newCamp, 0.1f);
-        } 
+            //END Part made by Lise Careel
+        }
 
         UpdateValueAndVisual();
     }
@@ -175,18 +173,13 @@ public class Home : Planet {
         inCamp = false;
         haloCamp.gameObject.SetActive(false);
         haloOut.gameObject.SetActive(true);
-
-        //TO DO : Kill all ship near him or convert their 
         
         foreach(Ship ship in _shipAnchorToThisPlanet)
         {
             //convert :
             ship.GetOutCamp();
-            //killjoinCamp
-            //ship.DestroyShip();
         }
-
-//        print("quit Camp : " + this.name);
+        //print("quit Camp : " + this.name);
         AttackAroundHim();
 
         GameMaster.Instance.RemovePlanetInPeace();
@@ -225,8 +218,10 @@ public class Home : Planet {
     {
         int deadNumber = GetCivil() - numberOfShipAttacked * StaticValue.numberOfCivilDeadByShip;
         SetCivil(deadNumber);
-        if(GetCivil()!=0)
+        if (GetCivil() != 0)
+        {
             GameMaster.Instance.AddCasualties(deadNumber);
+        }
     }
 
     private void UpdateCivilText()
@@ -278,6 +273,8 @@ public class Home : Planet {
             SetMood(mood - 1);
             CivilStarvation();
         }
+
+        //Part made by Lise Careel
         if (GetCivil() == 0 && state == 1)
         {
             _audioSource.PlayOneShot(destroyHome, 0.1f);
@@ -285,6 +282,7 @@ public class Home : Planet {
         }
         if (GetCivil() > 0 && state == 0)
             _audioSource.PlayOneShot(healHome, 0.1f);
+        //END Part made by Lise Careel
     }
     public void CivilStarvation()
     {
@@ -326,7 +324,9 @@ public class Home : Planet {
             if (inCamp)
             {
                 shipCreate.GoToCamp();
+                //Part made by Lise Careel
                 _audioSource.PlayOneShot(spawnAmoi, 0.1f);
+                //END Part made by Lise Careel
             }
             else
             {
@@ -407,9 +407,7 @@ public class Home : Planet {
         radar.transform.position = this.transform.position;
         radar.origin = this;
         radar.keepSeeking = true;
-       // print("Before waitUntil in seekForPlanet for " + this.name);
         yield return new WaitUntil(() => (radar.planetTouched.Count >= 5));
-      //  print("After waitUntil in seekForPlanet for for " + this.name);
         radar.keepSeeking = false;
 
         TreatmentRadarData(radar.planetTouched);
@@ -419,16 +417,10 @@ public class Home : Planet {
     private void LaterSend()
     {
         Invoke("AttackAroundHim", StaticValue.tempo * 10);
-        Invoke("MessageForSend" , StaticValue.tempo * 10);
-    }
-    private void MessageForSend()
-    {
-        //print("recalcul !");
     }
 
     private IEnumerator seekForMorePlanetToInvade()
     {
-        //print("Re looking for");
         radar.origin = this;
         radar.keepSeeking = true;
         radar.planetTouched.Clear();
@@ -449,7 +441,7 @@ public class Home : Planet {
 
     private void TreatmentRadarData(List<Planet> planetData)
     {
-   //     print("TreatmentRadarData for "+this.name);
+        //print("TreatmentRadarData for "+this.name);
         List<Planet> noRisk = new List<Planet>();
         Dictionary<Planet, float> risqueLvl = new Dictionary<Planet, float>();
         foreach(Planet planet in planetData)
@@ -490,6 +482,9 @@ public class Home : Planet {
                 noRisk.Add(planet);
             }
         } // fin du foreach
+
+        /*
+        //string for log 
         string risqueList = "";
         string noRiskList = "";
         foreach (Planet planet in risqueLvl.Keys)
@@ -500,8 +495,9 @@ public class Home : Planet {
         {
             noRiskList += ", " + planet.name;
         }
-//        print("RisqueLvl (" + risqueLvl.Count +") : "+ risqueList);
-//        print("noRisk (" + noRisk.Count + ") = "+noRiskList);
+        print("RisqueLvl (" + risqueLvl.Count +") : "+ risqueList);
+        print("noRisk (" + noRisk.Count + ") = "+noRiskList);
+        */
         if(risqueLvl.Count == 0 && noRisk.Count == 0)
         {
             StartCoroutine(seekForMorePlanetToInvade());

@@ -41,7 +41,9 @@ public class GameMaster : MonoBehaviour {
     public List<Home> allHomePlanets = new List<Home>();
     public List<Resources> allResourcesPlanets = new List<Resources>();
 
+    //Part made by Lise Careel
     private AudioSource _audioSource;
+    //END Part made by Lise Careel
 
     void Awake()
     {
@@ -55,8 +57,8 @@ public class GameMaster : MonoBehaviour {
         }
 
         //set start value
-        int diffNumber = PlayerPrefs.GetInt("DIFFICULTY");
-        int spdNumber = PlayerPrefs.GetInt("SPEED");
+        int diffNumber = PlayerPrefs.GetInt(StaticValue.nameForDiffInPlayerPref);
+        int spdNumber = PlayerPrefs.GetInt(StaticValue.nameForSpeedInPlayerPref);
 
         switch (diffNumber)
         {
@@ -108,7 +110,7 @@ public class GameMaster : MonoBehaviour {
         for(int i = 0; i < randomHome; i++)
         {
             Home homeCreated = GetNewHome();
-            int randomGet = TryRandomTillSuccess(homeCreated, nameUsed);
+            int randomGet = TryRandomUntilSuccess(homeCreated, nameUsed);
             allHomePlanets.Add(homeCreated);
             PointSpawn newPosition = possibleSpawnPoint[randomGet % possibleSpawnPoint.Count];
 //            print( (randomGet % possibleSpawnPoint.Count) + " = nombre sorti");
@@ -124,7 +126,7 @@ public class GameMaster : MonoBehaviour {
         for (int i = 0; i < randomResources; i++)
         {
             Resources resourcesCreated = GetNewResources();
-            int randomGet = TryRandomTillSuccess(resourcesCreated, nameUsed);
+            int randomGet = TryRandomUntilSuccess(resourcesCreated, nameUsed);
             allResourcesPlanets.Add(resourcesCreated);
             PointSpawn newPosition = possibleSpawnPoint[randomGet % possibleSpawnPoint.Count];
  //           print((randomGet % possibleSpawnPoint.Count) + " = nombre sorti");
@@ -141,18 +143,18 @@ public class GameMaster : MonoBehaviour {
         numberOfIronMax = randomResources * 4 / 3;
 
         int badMoodInt = Random.Range(0, allHomePlanets.Count);
-        allHomePlanets[(int)badMoodInt].badMood = true;
+        allHomePlanets[(int)badMoodInt].badMoodForced = true;
         int invers = Mathf.Abs(allHomePlanets.Count - (int)badMoodInt);
         if (invers < allHomePlanets.Count) 
-            allHomePlanets[invers].goodMood = true;
+            allHomePlanets[invers].goodMoodForced = true;
 
         badMoodInt = Random.Range(0, allHomePlanets.Count);
-        if(!allHomePlanets[(int)badMoodInt].goodMood)
-            allHomePlanets[(int)badMoodInt].badMood = true;
+        if(!allHomePlanets[(int)badMoodInt].goodMoodForced)
+            allHomePlanets[(int)badMoodInt].badMoodForced = true;
         invers = Mathf.Abs(allHomePlanets.Count - (int)badMoodInt);
         if (invers < allHomePlanets.Count)
-            if (!allHomePlanets[Mathf.Abs(allHomePlanets.Count - (int)badMoodInt)].badMood)
-            allHomePlanets[Mathf.Abs(allHomePlanets.Count - (int)badMoodInt)].goodMood = true;
+            if (!allHomePlanets[Mathf.Abs(allHomePlanets.Count - (int)badMoodInt)].badMoodForced)
+            allHomePlanets[Mathf.Abs(allHomePlanets.Count - (int)badMoodInt)].goodMoodForced = true;
 
 
         switch (difficulty)
@@ -187,17 +189,20 @@ public class GameMaster : MonoBehaviour {
                 StaticValue.tempo = 0.1f;
                 break;
         }
+
+        //Part made by Lise Careel
         _audioSource = GetComponent<AudioSource>();
         _audioSource.Play();
+        //END Part made by Lise Careel
     }
-    private int TryRandomTillSuccess(Planet planet, List<UtilType.PlanetID> nameUsed)
+    private int TryRandomUntilSuccess(Planet planet, List<UtilType.PlanetID> nameUsed)
     {
 //        print("randomNum = Random("+0 +", "+ StaticValue.numberOfPlanetName+")");
         int randomNum = Random.Range(0, StaticValue.numberOfPlanetName);
         planet.nameInGame = (UtilType.PlanetID)randomNum;
         if (nameUsed.Contains(planet.nameInGame))
         {
-            randomNum = TryRandomTillSuccess(planet, nameUsed);
+            randomNum = TryRandomUntilSuccess(planet, nameUsed);
         } else
         {
             nameUsed.Add(planet.nameInGame);
